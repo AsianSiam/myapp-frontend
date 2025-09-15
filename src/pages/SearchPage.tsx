@@ -28,7 +28,7 @@ const SearchPage = () => {
 
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-    const { results, isLoading } = useSearchRestaurants(searchState,city);
+    const { results, isLoading } = useSearchRestaurants(searchState, city);
 
     const setSortOption = (sortOption: string) => {
         setSearchState((prevState) => ({ ...prevState, sortOption, page: 1 }));

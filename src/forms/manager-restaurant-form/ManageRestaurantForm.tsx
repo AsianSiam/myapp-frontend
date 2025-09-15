@@ -1,6 +1,6 @@
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  z } from "zod";
+import {  email, z } from "zod";
 import DetailsSection from "./DetailsSection";
 import { Separator } from "@/components/ui/separator";
 import LoadingButton from "@/components/LoadingButton";
@@ -18,8 +18,12 @@ const formSchema = z.object({
     restaurantName: z.string().nonempty("Restaurant name is required"),
     addressLine1: z.string().nonempty("Address is required"),
     city: z.string().nonempty("City is required"),
+    zipCode: z.number().min(1, "Zip code is required"),
     state: z.string().nonempty("State is required"),
     country: z.string().nonempty("Country is required"),
+    phoneNumber: z.number().min(1, "Phone number is required"),
+    website: z.string().url("Website must be a valid URL").optional().or(z.literal("")),
+    emailRestaurant: z.string().email("Email must be a valid email address").or(z.literal("")),
     deliveryPrice: z.coerce.number().min(1, "Delivery price must be positive"),
     estimatedDeliveryTime: z.coerce.number().min(1, "Estimated delivery time must be positive"),
     cuisines: z.array(z.string()).nonempty("At least one cuisine is required"),
@@ -48,6 +52,10 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
             restaurantName: "",
             addressLine1: "",
             city: "",
+            zipCode: 1,
+            phoneNumber: 1,
+            website: "",
+            emailRestaurant: "",
             state: "",
             country: "",
             deliveryPrice: 1,
@@ -73,7 +81,9 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
         const updateRestaurant = {
             ...restaurant,
             deliveryPrice: deliveryPriceFormatted,
-            menuItems: menuItemsFormatted,            
+            menuItems: menuItemsFormatted,   
+            zipCode: Number(restaurant.zipCode),
+            phoneNumber: Number(restaurant.phoneNumber),         
         }
         form.reset(updateRestaurant);
     }, [form, restaurant]);
@@ -93,6 +103,11 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
         formData.append("city", formDataJson.city);
         formData.append("state", formDataJson.state);
         formData.append("country", formDataJson.country);
+        formData.append("zipCode", formDataJson.zipCode.toString());
+        formData.append("phoneNumber", formDataJson.phoneNumber.toString());
+        formData.append("emailRestaurant", formDataJson.emailRestaurant || "");
+        formData.append("website", formDataJson.website || "");
+        // Convert dollars to cents for deliveryPrice
         formData.append("deliveryPrice", Math.round(Number(formDataJson.deliveryPrice * 100)).toString());
         formData.append("estimatedDeliveryTime", formDataJson.estimatedDeliveryTime.toString());
         filteredCuisines.forEach((cuisine, index) => {

@@ -2,10 +2,12 @@ export type User = {
 _id: string;
 email: string;
 name: string;
-adresseLine1: string;
+addressLine1: string;
 city: string;
 state: string;
 country: string;
+zipCode: number;
+phoneNumber: number;
 }
 export type MenuItem = {
 _id: string;
@@ -19,8 +21,12 @@ user: string;
 restaurantName: string;
 addressLine1: string;
 city: string;
+zipCode: number;
 state: string;
 country: string;
+phoneNumber: number;
+emailRestaurant: string;
+website: string;
 cuisines: string[];
 imageUrl: string;
 deliveryPrice: number; 
