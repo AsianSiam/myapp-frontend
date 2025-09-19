@@ -2,6 +2,7 @@ import { FormDescription, FormField, FormItem } from "@/components/ui/form";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import MenuItemInput from "./MenuItemInput";
+import { ObjectId } from "bson";
 
 
 const MenuSection = () => {  
@@ -27,7 +28,7 @@ const MenuSection = () => {
                     ))}                
                 </FormItem>
             )} />
-            <Button type="button" onClick={() => append({ name: "", description: "", price: 0 })} >
+            <Button type="button" onClick={() => append({ _id: new ObjectId().toString(), name: "", description: "", price: 0 })} >
                 Add Menu Item
             </Button>
         </div>

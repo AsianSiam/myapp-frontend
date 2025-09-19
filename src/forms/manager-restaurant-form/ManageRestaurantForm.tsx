@@ -1,6 +1,6 @@
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  email, z } from "zod";
+import { z } from "zod";
 import DetailsSection from "./DetailsSection";
 import { Separator } from "@/components/ui/separator";
 import LoadingButton from "@/components/LoadingButton";
@@ -28,6 +28,7 @@ const formSchema = z.object({
     estimatedDeliveryTime: z.coerce.number().min(1, "Estimated delivery time must be positive"),
     cuisines: z.array(z.string()).nonempty("At least one cuisine is required"),
     menuItems: z.array(z.object({
+        _id: z.string().nonempty("Menu item ID is required"),
         name: z.string().nonempty("Menu item name is required"),
         price: z.coerce.number().min(1, "Menu item price must be positive"),
     })),
@@ -116,6 +117,7 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
         formDataJson.menuItems.forEach((menuItem, index) => {
             formData.append(`menuItems[${index}][name]`, menuItem.name);
             formData.append(`menuItems[${index}][price]`, Math.round(Number(menuItem.price * 100)).toString());
+            formData.append(`menuItems[${index}][_id]`, menuItem._id);
         });
 
         if (formDataJson.imageFile) {

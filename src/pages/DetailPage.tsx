@@ -30,8 +30,7 @@ const DetailPage = () => {
 
     const addToCart = (menuItem: MenuItemType) => {
         setCartItems((prevCartItems) => {
-            const existingCartItem = prevCartItems.find((item) => item._id === menuItem._id
-            );
+            const existingCartItem = prevCartItems.find((cartItem) => cartItem._id === menuItem._id);
             let updatedCartItems;
             if (existingCartItem) {
                 updatedCartItems = prevCartItems.map((cartItem) =>
