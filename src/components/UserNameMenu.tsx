@@ -13,16 +13,21 @@ const UsernameMenu = () => {
                 <CircleUserRound className="text-orange-500" />
                 {user?.email}                
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="w-52 bg-white border border-gray-200" align="end">
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                     <Link to="/user-profile" className="font-bold hover:text-orange-500">
-                    User Profile
+                    Profil Utilisateur
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
+                    <Link to="/order-status" className="font-bold hover:text-orange-500">
+                    Mes Commandes
+                </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
                     <Link to="/manage-restaurant" className="font-bold hover:text-orange-500">
-                    Manage Restaurant
+                    Mon Restaurant
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />                
@@ -31,7 +36,7 @@ const UsernameMenu = () => {
                         onClick={() => logout ()} 
                         className="flex flex-1 font-bold bg-orange-500"
                     >
-                            Log Out                        
+                            Déconnexion
                     </Button>
                 </DropdownMenuItem>
             </DropdownMenuContent>

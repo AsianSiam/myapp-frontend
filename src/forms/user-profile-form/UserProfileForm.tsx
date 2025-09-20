@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormDescription, FormField, FormItem, FormControl, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import LoadingButton from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
@@ -29,7 +29,7 @@ type Props = {
     title?: string;
 };
 
-const UserProfileForm = ({ onSave, isLoading, currentUser, buttonText = "Save", title = "User Profile" }: Props) => {
+const UserProfileForm = ({ onSave, isLoading, currentUser, buttonText = "Enregistrer", title = "Profil Utilisateur" }: Props) => {
     const form = useForm<UserFormData>({
         resolver: zodResolver(formSchema),
         defaultValues: currentUser,
@@ -43,8 +43,7 @@ const UserProfileForm = ({ onSave, isLoading, currentUser, buttonText = "Save", 
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSave)} className="space-y-4 bg-gray rounded-lg md:p-10">
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">{title}</h2>
-                    <FormDescription> Update your user profile information below.</FormDescription>                    
+                    <h2 className="text-2xl font-bold mb-4">{title}</h2>                   
                 </div>
                 <h2 className='font-bold'> Données personnelles</h2>
                     <FormField control={form.control} name="name" render={({ field }) => (                    

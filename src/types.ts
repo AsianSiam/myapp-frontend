@@ -33,7 +33,54 @@ deliveryPrice: number;
 estimatedDeliveryTime: number;
 menuItems: MenuItem[];
 lastUpdated: string;
+};
 
+
+export type CheckoutSessionRequest = {
+    cartItems: {
+        menuItemId: string;
+        name: string;
+        quantity: string;
+    }[];
+    deliveryDetails: {
+        email: string;
+        name: string;
+        addressLine1: string;
+        city: string;
+        zipCode: string;
+        state: string;
+        country: string;
+    };
+    restaurantId: string;
+};
+
+export type OrderStatus = "placed" | "paid" | "outForDelivery" | "delivered";
+
+export type Order = {
+    _id: string;
+    user: User;
+    restaurant: Restaurant;
+    cartItems: { menuItemId: string, quantity: number, name: string, price: number }[];
+    deliveryDetails: {
+        name: string;
+        addressLine1: string;
+        city: string;
+        zipCode: string;
+        state: string;
+        country: string;
+        email: string;
+    };
+    totalAmount: number;
+    status: OrderStatus;
+    createdAt: string;
+    restaurantId: string;
+    updatedAt: string;
+    paymentIntentId: string;
+    clientSecret: string;
+    stripeSessionId: string;
+    deliveryAddress: string;
+    deliveryTime: string;
+    specialInstructions?: string;
 };
 
 export type RestaurantSearchResponse = {
