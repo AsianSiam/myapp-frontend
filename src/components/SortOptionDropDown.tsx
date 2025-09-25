@@ -7,16 +7,24 @@ type Props = {
 };
 const SORT_OPTIONS = [
     {
-        label: "Best match",
-        value: "bestMatch"
+        label: "Plus récent",
+        value: "lastUpdate"
     },
     {
-        label: "Delivery price",
-        value: "deliveryPrice"
+        label: "Prix croissant",
+        value: "priceAsc"
     },
     {
-        label: "Estimated delivery time",
-        value: "estimatedDeliveryTime"
+        label: "Prix décroissant", 
+        value: "priceDesc"
+    },
+    {
+        label: "Note décroissante",
+        value: "ratingDesc"
+    },
+    {
+        label: "Note croissante",
+        value: "ratingAsc"
     },
 ];
 
@@ -33,7 +41,7 @@ const SortOptionDropDown = ({ onChange, sortOption }: Props) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 {SORT_OPTIONS.map((option) => (
-                <DropdownMenuItem className="cursor-pointer" onClick={() => onChange(option.value)}>
+                <DropdownMenuItem key={option.value} className="cursor-pointer" onClick={() => onChange(option.value)}>
                     {option.label}
                 </DropdownMenuItem>
             ))} 

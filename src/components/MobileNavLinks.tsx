@@ -6,17 +6,17 @@ const MobileNavLinks = () => {
     const { logout } = useAuth0();
     return (
         <>
-        <Link to="/user-profile" className="flex bg-white items-center font-bold hover:text-orange-500">
-            User Profile
+        <Link to="/user-profile" className="flex bg-white items-center font-bold hover:text-gray-500">
+            Profil Utilisateur
         </Link>
-        <Link to="/manage-restaurant" className="flex bg-white items-center font-bold hover:text-orange-500">
-            My Restaurant
+        <Link to="/manage-shop" className="flex bg-white items-center font-bold hover:text-gray-500">
+            Gérer ma Boutique
         </Link>
-        <Link to="/order-status" className="flex bg-white items-center font-bold hover:text-orange-500">
-            Order Status
+        <Link to="/order-status" className="flex bg-white items-center font-bold hover:text-gray-500">
+            Statut de la Commande
         </Link>
-        <Button onClick={() => logout ()}  className="flex items-center px-3 font-bold bg-orange-500 hover:bg-gray-500">
-            Log Out
+        <Button onClick={() => logout ()}  className="flex items-center px-3 font-bold bg-gray-300 hover:bg-gray-500">
+            Déconnexion
         </Button> 
         </>
     )

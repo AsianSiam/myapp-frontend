@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import type { Order } from "@/types";
 import type { CheckoutSessionRequest } from "@/types";
 
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useGetMyOrders = () => {

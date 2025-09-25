@@ -2,45 +2,25 @@ export type User = {
 _id: string;
 email: string;
 name: string;
+firstname: string;
+nickname: string;
+birthdate: string;
 addressLine1: string;
 city: string;
 state: string;
 country: string;
 zipCode: number;
 phoneNumber: number;
+indicatifTel: string;
+language: string;
 }
-export type MenuItem = {
-_id: string;
-name: string;
-price: number;
-};
-
-export type Restaurant = {
-_id: string;
-user: string;
-restaurantName: string;
-addressLine1: string;
-city: string;
-zipCode: number;
-state: string;
-country: string;
-phoneNumber: number;
-emailRestaurant: string;
-website: string;
-cuisines: string[];
-imageUrl: string;
-deliveryPrice: number; 
-estimatedDeliveryTime: number;
-menuItems: MenuItem[];
-lastUpdated: string;
-};
-
 
 export type CheckoutSessionRequest = {
     cartItems: {
         menuItemId: string;
         name: string;
         quantity: string;
+        price: number;
     }[];
     deliveryDetails: {
         email: string;
@@ -51,16 +31,22 @@ export type CheckoutSessionRequest = {
         state: string;
         country: string;
     };
-    restaurantId: string;
+    articleShopId: string;
 };
 
-export type OrderStatus = "placed" | "paid" | "outForDelivery" | "delivered";
+export type CartItem = {
+    menuItemId: string;
+    name: string;
+    quantity: number;
+    price: number;
+};
+
+export type OrderStatus = "placed" | "paid" | "inProgress" | "outForDelivery" | "delivered";
 
 export type Order = {
     _id: string;
     user: User;
-    restaurant: Restaurant;
-    cartItems: { menuItemId: string, quantity: number, name: string, price: number }[];
+    cartItems: CartItem[];
     deliveryDetails: {
         name: string;
         addressLine1: string;
@@ -71,23 +57,44 @@ export type Order = {
         email: string;
     };
     totalAmount: number;
+    deliveryPrice: number;
     status: OrderStatus;
     createdAt: string;
-    restaurantId: string;
-    updatedAt: string;
-    paymentIntentId: string;
-    clientSecret: string;
-    stripeSessionId: string;
-    deliveryAddress: string;
-    deliveryTime: string;
-    specialInstructions?: string;
+    paymentIntentId?: string;
+    clientSecret?: string;
+    stripeSessionId?: string;
 };
 
-export type RestaurantSearchResponse = {
-    data: Restaurant[];
+export type ArticleShop = {
+    _id: string;
+    name: string;
+    description: string;
+    category: string;
+    price: number;
+    stock: number;
+    imageUrl: string;
+    images: string[]; // Nouvelles images multiples
+    rating: number;
+    reviewCount: number;
+    lastUpdate: string;
+};
+
+export type ArticleShopSearchResponse = {
+    data: ArticleShop[];
     pagination: {
         total: number;
         page: number;
         pages: number;
     };
+};
+
+export type Review = {
+    _id: string;
+    user: string;
+    userName: string;
+    articleId: string;
+    rating: number;
+    comment: string;
+    verified: boolean;
+    createdAt: string;
 };

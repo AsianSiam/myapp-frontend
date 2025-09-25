@@ -4,18 +4,15 @@ import { Separator } from "@radix-ui/react-separator";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { ORDER_STATUS } from "@/config/order-status-config";
-import type { Restaurant } from "@/types";
-import { useUpdateOrderStatus } from "@/api/MyRestaurantApi";
+import { useUpdateMyOrderStatus } from "@/api/MyArticleApi";
 import { useEffect, useState } from "react";
-
 
 type Props = {
     order: Order;
-    restaurant: Restaurant;
 };  
 
-const OrderItemCard = ({ order, restaurant }: Props) => {
-    const { updateRestaurantStatus, isLoading } = useUpdateOrderStatus();
+const OrderItemCard = ({ order }: Props) => {
+    const { updateOrderStatus, isLoading } = useUpdateMyOrderStatus();
     const [status, setStatus] = useState<OrderStatus>(order.status);
 
     useEffect(() => {
@@ -23,13 +20,12 @@ const OrderItemCard = ({ order, restaurant }: Props) => {
     }, [order.status]);
 
     const handleStatusChange = async(newStatus: OrderStatus) => {
-        await updateRestaurantStatus({ orderId: order._id, status: newStatus });
+        await updateOrderStatus({ orderId: order._id, status: newStatus });
         setStatus(newStatus);
     }
 
     const getTime = () => {
         const orderDateTime = new Date(order.createdAt);
-
         return orderDateTime.toLocaleString();
     }
 
@@ -65,7 +61,7 @@ const OrderItemCard = ({ order, restaurant }: Props) => {
                         </SelectTrigger>
                         <SelectContent position="popper" className="bg-white w-100%">
                             {ORDER_STATUS.map((status) => (
-                                <SelectItem value={status.value}>
+                                <SelectItem key={status.value} value={status.value}>
                                     {status.label}
                                 </SelectItem>
                             ))}
@@ -99,7 +95,7 @@ const OrderItemCard = ({ order, restaurant }: Props) => {
                     <span>Frais de livraison:</span>
                     <span></span>
                     <span></span>
-                    <span>{(restaurant.deliveryPrice / 100).toFixed(2)} CHF</span>                   
+                    <span>{(order.deliveryPrice / 100).toFixed(2)} CHF</span>                   
                 </div>
                 <div className="font-bold grid grid-cols-4 gap-4 py-2 mt-4 pt-4 border-t">
                     <span>Total: </span>
@@ -107,12 +103,7 @@ const OrderItemCard = ({ order, restaurant }: Props) => {
                     <span></span>
                     <span>{(order.totalAmount / 100).toFixed(2)} CHF</span>
                 </div>
-            </>
-
-
-
-
-                
+                </>
             </CardContent>
         </Card>
     );

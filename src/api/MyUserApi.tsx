@@ -24,12 +24,12 @@ export const useGetMyUser = () => {
     return response.json();
   };
 
-  const { data: currentUser, isLoading, error } = useQuery("fetchCurrentUser", getMyUserRequest);
+  const { data: currentUser, isLoading, error, refetch } = useQuery("fetchCurrentUser", getMyUserRequest);
 
   if(error) {
     toast.error(error.toString());
   }
-  return { currentUser, isLoading };
+  return { currentUser, isLoading, refetch };
 };
 
 type CreateUserRequest = {
@@ -69,6 +69,12 @@ type updateMyUserRequest = {
   country: string;
   zipCode: number;
   phoneNumber: number;
+  indicatifTel: string;
+  language: string;
+  birthdate?: string;
+  nickname?: string;
+  firstname: string;
+  email?: string;
 };
 
 
