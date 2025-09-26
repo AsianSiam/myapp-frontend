@@ -34,7 +34,7 @@ export default defineConfig({
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select', '@radix-ui/react-separator', '@radix-ui/react-tabs'],
           
           // Utilitaires
-          utils: ['date-fns', 'clsx', 'tailwind-merge']
+          utils: ['clsx', 'tailwind-merge']
         }
       }
     },
