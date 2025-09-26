@@ -157,30 +157,35 @@ const ManageShopPage = () => {
                                 {filteredArticles && filteredArticles.length > 0 ? (
                                     <div className="grid gap-4">
                                         {filteredArticles.map((article: ArticleShop) => (
-                                            <div key={article._id} className="bg-app-surface border border-app rounded-xl p-6 hover:shadow-md transition-shadow">
-                                                <div className="flex items-start gap-4">
+                                            <div key={article._id} className="modern-black-card rounded-xl p-4 md:p-6 hover:shadow-md transition-shadow">
+                                                <div className="flex flex-col md:flex-row items-start gap-4">
                                                     <img 
                                                         src={article.imageUrl} 
                                                         alt={article.name}
-                                                        className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                                                        className="w-full h-32 md:w-16 md:h-16 object-cover rounded-lg shadow-sm"
                                                     />
-                                                    <div className="flex-1">
-                                                        <h3 className="font-semibold text-app-primary">{article.name}</h3>
-                                                        <p className="text-sm text-app-secondary mb-2">{article.description}</p>
-                                                        <div className="flex gap-4 text-sm text-app-secondary">
-                                                            <span>ID: <code className="bg-app-muted px-2 py-1 rounded text-xs font-mono border border-app text-app-primary">{article._id}</code></span>
-                                                            <span>Catégorie: {article.category}</span>
-                                                            <span>Prix: CHF {(article.price / 100).toFixed(2)}</span>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-semibold text-app-primary text-lg md:text-base truncate">{article.name}</h3>
+                                                        <p className="text-sm text-app-secondary mb-2 line-clamp-2">{article.description}</p>
+                                                        <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-app-secondary">
+                                                            <span className="bg-app-muted/50 px-2 py-1 rounded-full text-xs">{article.category}</span>
+                                                            <span className="font-medium text-app-primary">CHF {(article.price / 100).toFixed(2)}</span>
                                                             <span>Stock: {article.stock}</span>
-                                                            <span>Note: {article.rating || 0}/5</span>
+                                                            <span className="hidden md:inline">Note: {article.rating || 0}/5</span>
+                                                        </div>
+                                                        <div className="mt-2 md:hidden">
+                                                            <span className="text-xs text-app-tertiary">ID: {article._id}</span>
+                                                        </div>
+                                                        <div className="hidden md:block mt-1">
+                                                            <span className="text-xs text-app-tertiary">ID: <code className="bg-app-muted px-2 py-1 rounded text-xs font-mono border border-app text-app-primary">{article._id}</code></span>
                                                         </div>
                                                     </div>
-                                                    <div className="flex gap-2">
+                                                    <div className="flex flex-row md:flex-col gap-2 w-full md:w-auto">
                                                         <Button 
                                                             size="sm" 
                                                             variant="outline"
                                                             onClick={() => setEditingArticle(article)}
-                                                            className="border-app hover:bg-app-muted hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                                                            className="flex-1 md:flex-none text-xs md:text-sm border-app hover:bg-app-muted hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
                                                         >
                                                             Modifier
                                                         </Button>
@@ -189,7 +194,7 @@ const ManageShopPage = () => {
                                                             variant="destructive"
                                                             onClick={() => handleDeleteArticle(article._id)}
                                                             disabled={isDeletingArticle}
-                                                            className="hover:bg-red-600 dark:hover:bg-red-500 transition-all duration-200"
+                                                            className="flex-1 md:flex-none text-xs md:text-sm hover:bg-red-600 dark:hover:bg-red-500 transition-all duration-200"
                                                         >
                                                             Supprimer
                                                         </Button>

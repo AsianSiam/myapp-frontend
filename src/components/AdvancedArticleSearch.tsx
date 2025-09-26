@@ -123,7 +123,7 @@ const AdvancedArticleSearch = ({
 
             {/* Informations des résultats et options de tri */}
             {showResultInfo && (
-                <div className="flex justify-between items-center flex-col gap-4 sm:flex-row">
+                <div className="flex justify-between items-center gap-2">
                     <SearchResultInfo 
                         total={filteredAndSortedArticles?.length || 0}
                         category={resultInfoCategory}

@@ -90,7 +90,7 @@ const ShopPage = () => {
             </div>
             
             {/* Informations des résultats et options de tri */}
-            <div className='flex justify-between items-center flex-col gap-4 sm:flex-row'>
+            <div className='flex justify-between items-center gap-2'>
                 <SearchResultInfo 
                     total={results?.pagination?.total || 0} 
                     category="Articles" 

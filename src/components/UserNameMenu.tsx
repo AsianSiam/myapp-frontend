@@ -1,12 +1,12 @@
 import { DropdownMenu,  DropdownMenuContent,  DropdownMenuItem,  DropdownMenuSeparator,  DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useAuth0 } from "@auth0/auth0-react"
 import { CircleUserRound } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { useIsAdmin } from "@/api/AdminApi"
+import { useAuth0Logout } from "@/config/auth0"
 
 const UsernameMenu = () => {
-    const { logout } = useAuth0();
+    const logout = useAuth0Logout();
     const { isAdmin, isLoading: isLoadingAdmin } = useIsAdmin();
     
     return (
@@ -37,7 +37,7 @@ const UsernameMenu = () => {
                 <DropdownMenuSeparator />                
                 <DropdownMenuItem>
                     <Button 
-                        onClick={() => logout ()} 
+                        onClick={() => logout()} 
                         className="flex flex-1 font-bold btn-secondary"
                     >
                         Déconnexion
