@@ -19,7 +19,8 @@ const ArticleCheckoutButton = ({ children, disabled }: Props) => {
     const { isAuthenticated, loginWithRedirect, user } = useAuth0();
     const { cartItems, clearCart } = useCart();
     const { createArticleCheckoutSession, isLoading: isCheckoutLoading } = useCreateArticleCheckoutSession();
-    const { currentUser, isLoading: isGetUserLoading } = useGetMyUser();
+    // Seulement récupérer les données utilisateur s'il est authentifié
+    const { currentUser, isLoading: isGetUserLoading } = useGetMyUser(isAuthenticated);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const onCheckout = async (userFormData: UserFormData) => {

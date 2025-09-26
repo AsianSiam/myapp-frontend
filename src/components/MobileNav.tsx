@@ -9,7 +9,8 @@ import { useGetMyUser } from "@/api/MyUserApi"
 
 const MobileNav = () => {
     const { isAuthenticated, loginWithRedirect, user } = useAuth0();
-    const { currentUser } = useGetMyUser();
+    // Seulement récupérer les données utilisateur s'il est authentifié
+    const { currentUser } = useGetMyUser(isAuthenticated);
     return (
         <Sheet>
             <SheetTrigger className="text-app-primary hover:text-accent transition-colors p-2 rounded-lg">

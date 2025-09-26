@@ -5,7 +5,7 @@ import { useAuth0Token } from "@/hooks/useAuth0Token";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const useGetMyUser = () => {
+export const useGetMyUser = (enabled: boolean = true) => {
   const { getTokenSafely } = useAuth0Token();
   
   const getMyUserRequest = async (): Promise<User> => {
@@ -30,7 +30,13 @@ export const useGetMyUser = () => {
     }
   };
 
-  const { data: currentUser, isLoading, error, refetch } = useQuery("fetchCurrentUser", getMyUserRequest);
+  const { data: currentUser, isLoading, error, refetch } = useQuery(
+    "fetchCurrentUser", 
+    getMyUserRequest,
+    {
+      enabled: enabled // Seulement exécuter si enabled=true
+    }
+  );
 
   if(error) {
     toast.error(error.toString());

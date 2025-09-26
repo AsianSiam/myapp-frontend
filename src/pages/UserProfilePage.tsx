@@ -40,35 +40,50 @@ const UserProfilePage = () => {
     };
 
     if (isGetLoading) {
-        return <span>Loading...</span>;
+        return (
+            <div className="min-h-screen modern-black-bg">
+                <div className="app-container py-8">
+                    <div className="flex justify-center items-center min-h-[400px]">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-app-primary"></div>
+                    </div>
+                </div>
+            </div>
+        );
     }
     if (!currentUser) {
-        return <span>Unable to load user profile</span>
+        return (
+            <div className="min-h-screen modern-black-bg">
+                <div className="app-container py-8">
+                    <div className="text-center text-app-primary">Unable to load user profile</div>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <Tabs defaultValue="profil" value={activeTab} onValueChange={setActiveTab}>
-                <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">Profil utilisateur</h2>
-                    {activeTab === "profil" && (
-                        <button
-                            onClick={() => setActiveTab("manage-profile")}
-                            className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors shadow-sm font-medium"
-                        >
-                            Éditer profil
-                        </button>
-                    )}                
-                </div>
+        <div className="min-h-screen modern-black-bg">
+            <div className="app-container py-8">
+                <Tabs defaultValue="profil" value={activeTab} onValueChange={setActiveTab}>
+                    <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-3xl font-bold text-app-primary">Profil utilisateur</h2>
+                        {activeTab === "profil" && (
+                            <button
+                                onClick={() => setActiveTab("manage-profile")}
+                                className="px-6 py-3 bg-white text-black rounded-lg hover:bg-blue-600 hover:text-white transition-colors shadow-sm font-medium"
+                            >
+                                Modifier
+                            </button>
+                        )}                
+                    </div>
                 <TabsContent value="profil" className="space-y-8">
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Détails du compte et du profil</h2>
+                    <div className="modern-black-card rounded-2xl border-0 p-8">
+                        <h2 className="text-2xl font-bold text-app-primary mb-6">Détails du compte et du profil</h2>
                         
                         <div className="space-y-6">
-                            <div className="bg-gray-50 rounded-xl p-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Données personnelles</h3>
-                                <div className="space-y-2 text-gray-700">
-                                    <p className="font-medium">{currentUser?.name} {currentUser?.firstname}</p>
+                            <div className="bg-app-surface rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-app-primary mb-4">Données personnelles</h3>
+                                <div className="space-y-2 text-app-secondary">
+                                    <p className="font-medium text-app-primary">{currentUser?.name} {currentUser?.firstname}</p>
                                     <p>{currentUser?.email}</p>                    
                                     <p>{formatDate(currentUser?.birthdate)}</p>                    
                                     <p>
@@ -80,20 +95,20 @@ const UserProfilePage = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-gray-50 rounded-xl p-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Langue de communication</h3>
-                                <p className="text-gray-700">{languages.find(lang => lang.value === currentUser?.language)?.label || currentUser?.language}</p>
+                            <div className="bg-app-surface rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-app-primary mb-4">Langue de communication</h3>
+                                <p className="text-app-secondary">{languages.find(lang => lang.value === currentUser?.language)?.label || currentUser?.language}</p>
                             </div>
 
-                            <div className="bg-gray-50 rounded-xl p-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Pseudo</h3>
-                                <p className="text-gray-700">{currentUser?.nickname}</p>
+                            <div className="bg-app-surface rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-app-primary mb-4">Pseudo</h3>
+                                <p className="text-app-secondary">{currentUser?.nickname}</p>
                             </div>
 
-                            <div className="bg-gray-50 rounded-xl p-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Adresse</h3>
-                                <div className="space-y-2 text-gray-700">
-                                    <p className="font-medium">{currentUser?.name} {currentUser?.firstname}</p>
+                            <div className="bg-app-surface rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-app-primary mb-4">Adresse</h3>
+                                <div className="space-y-2 text-app-secondary">
+                                    <p className="font-medium text-app-primary">{currentUser?.name} {currentUser?.firstname}</p>
                                     <p>{currentUser?.addressLine1}</p>
                                     <p>{currentUser?.zipCode} {currentUser?.city}</p>
                                     <p>{currentUser?.country}</p>
@@ -103,11 +118,12 @@ const UserProfilePage = () => {
                     </div>
                 </TabsContent>
                 <TabsContent value="manage-profile">
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                    <div className="modern-black-card rounded-2xl border-0 p-8">
                         <UserProfileForm currentUser={currentUser} onSave={handleUpdateUser} onCancel={handleCancel} isLoading={isUpdateLoading} />
                     </div>
                 </TabsContent>
             </Tabs>
+            </div>
         </div>
     );
 }

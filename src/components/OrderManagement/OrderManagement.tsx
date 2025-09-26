@@ -98,7 +98,7 @@ const OrderManagement = ({
         return (
             <div className="text-center py-12">
                 <RefreshCw className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4" />
-                <p className="text-gray-600">Chargement des commandes...</p>
+                <p className="text-app-secondary">Chargement des commandes...</p>
             </div>
         );
     }
@@ -108,15 +108,15 @@ const OrderManagement = ({
             {/* En-tête avec actions */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Gestion des Commandes</h2>
-                    <p className="text-gray-600 mt-1">
+                    <h2 className="text-2xl font-bold text-app-primary">Gestion des Commandes</h2>
+                    <p className="text-app-secondary mt-1">
                         Suivi et gestion de toutes les commandes
                     </p>
                 </div>
                 
                 <div className="flex items-center gap-3">
                     {onRefresh && (
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-2 text-sm text-app-tertiary">
                             <Clock className="h-4 w-4" />
                             <span>Dernière MAJ: {formatLastRefresh(lastRefresh)}</span>
                         </div>
@@ -128,7 +128,7 @@ const OrderManagement = ({
                             size="sm"
                             onClick={handleManualRefresh}
                             disabled={isLoading}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-2 border-app hover:bg-app-muted"
                         >
                             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
                             Actualiser
@@ -139,9 +139,9 @@ const OrderManagement = ({
 
             {/* Alerte pour commandes prioritaires */}
             {priorityOrders.length > 0 && (
-                <Alert className="border-orange-200 bg-orange-50">
-                    <AlertCircle className="h-4 w-4 text-orange-600" />
-                    <AlertDescription className="text-orange-800">
+                <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800">
+                    <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                    <AlertDescription className="text-orange-800 dark:text-orange-300">
                         <span className="font-medium">
                             {priorityOrders.length} commande{priorityOrders.length > 1 ? 's' : ''} 
                             {" "}nécessite{priorityOrders.length > 1 ? 'nt' : ''} votre attention
@@ -167,12 +167,13 @@ const OrderManagement = ({
                             variant="outline"
                             size="sm"
                             onClick={handleExpandAll}
+                            className="border-app hover:bg-app-muted"
                         >
                             {expandedOrders.size === filteredOrders.length ? "Réduire tout" : "Étendre tout"}
                         </Button>
                         
                         {priorityOrders.length > 0 && (
-                            <Badge variant="outline" className="text-orange-600 border-orange-200">
+                            <Badge variant="outline" className="text-orange-600 border-orange-300 dark:text-orange-400 dark:border-orange-600">
                                 <TrendingUp className="w-3 h-3 mr-1" />
                                 {priorityOrders.length} prioritaire{priorityOrders.length > 1 ? 's' : ''}
                             </Badge>
@@ -180,7 +181,7 @@ const OrderManagement = ({
                     </div>
 
                     {isUpdatingStatus && (
-                        <div className="flex items-center gap-2 text-sm text-blue-600">
+                        <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
                             <RefreshCw className="animate-spin h-4 w-4" />
                             <span>Mise à jour en cours...</span>
                         </div>
@@ -195,8 +196,8 @@ const OrderManagement = ({
                     {priorityOrders.length > 0 && (
                         <div className="space-y-3">
                             <div className="flex items-center gap-2">
-                                <AlertCircle className="h-4 w-4 text-orange-600" />
-                                <h3 className="font-medium text-orange-900">Commandes Prioritaires</h3>
+                                <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                                <h3 className="font-medium text-orange-900 dark:text-orange-300">Commandes Prioritaires</h3>
                             </div>
                             {priorityOrders.map(order => (
                                 <div key={order._id} className="ring-2 ring-orange-200 rounded-lg">
@@ -217,7 +218,7 @@ const OrderManagement = ({
                         <div className="space-y-3">
                             {priorityOrders.length > 0 && (
                                 <div className="flex items-center gap-2 mt-6">
-                                    <h3 className="font-medium text-gray-700">Autres Commandes</h3>
+                                    <h3 className="font-medium text-app-secondary">Autres Commandes</h3>
                                 </div>
                             )}
                             {otherOrders.map(order => (
@@ -234,13 +235,13 @@ const OrderManagement = ({
                     )}
                 </div>
             ) : (
-                <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="text-gray-500">
-                        <TrendingUp className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <div className="text-center py-12 bg-app-surface rounded-lg border border-app">
+                    <div className="text-app-tertiary">
+                        <TrendingUp className="mx-auto h-12 w-12 text-app-muted-foreground mb-4" />
+                        <h3 className="text-lg font-medium text-app-primary mb-2">
                             {orders.length === 0 ? "Aucune commande" : "Aucune commande correspondante"}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-app-secondary">
                             {orders.length === 0 
                                 ? "Les nouvelles commandes apparaîtront ici."
                                 : "Essayez de modifier vos filtres de recherche."

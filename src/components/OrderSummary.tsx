@@ -1,7 +1,23 @@
 import type { Order } from "@/types";
 
 /**
- * Props pour le composant OrderSummary
+ * Props pour                        <div 
+                            key={index}
+                            className="grid grid-cols-4 gap-4 py-2 px-1 hover:bg-app-surface rounded transition-colors"
+                        >
+                            <span className="font-medium text-app-primary truncate" title={item.name}>
+                                {item.name}
+                            </span>
+                            <span className="text-center text-app-secondary">
+                                {item.quantity}x
+                            </span>
+                            <span className="text-right text-app-secondary">
+                                {formatPrice(item.price)} CHF
+                            </span>
+                            <span className="text-right font-semibold text-app-primary">
+                                {formatPrice(totalItemPrice)} CHF
+                            </span>
+                        </div>erSummary
  */
 type OrderSummaryProps = {
     order: Order;
@@ -38,13 +54,13 @@ const OrderSummary = ({ order, showTitle = true, className = "" }: OrderSummaryP
         <div className={`space-y-4 ${className}`}>
             {/* Titre optionnel */}
             {showTitle && (
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-app-primary">
                     Détail de la commande ({getTotalItemCount()} article{getTotalItemCount() > 1 ? 's' : ''})
                 </h3>
             )}
 
             {/* En-tête du tableau */}
-            <div className="grid grid-cols-4 gap-4 py-3 px-1 font-semibold text-sm text-gray-700 border-b-2 border-gray-200">
+            <div className="grid grid-cols-4 gap-4 py-3 px-1 font-semibold text-sm text-app-secondary border-b-2 border-app">
                 <span>Article</span>
                 <span className="text-center">Quantité</span>
                 <span className="text-right">Prix unitaire</span>
@@ -59,18 +75,18 @@ const OrderSummary = ({ order, showTitle = true, className = "" }: OrderSummaryP
                     return (
                         <div 
                             key={item.articleId || index}
-                            className="grid grid-cols-4 gap-4 py-2 px-1 hover:bg-gray-50 rounded transition-colors"
+                            className="grid grid-cols-4 gap-4 py-2 px-1 rounded transition-colors"
                         >
-                            <span className="font-medium text-gray-900 truncate" title={item.name}>
+                            <span className="font-medium text-app-primary truncate" title={item.name}>
                                 {item.name}
                             </span>
-                            <span className="text-center text-gray-600">
-                                {item.quantity}
+                            <span className="text-center text-app-primary">
+                                {item.quantity}x
                             </span>
-                            <span className="text-right text-gray-600">
+                            <span className="text-right text-app-primary">
                                 {formatPrice(item.price)} CHF
                             </span>
-                            <span className="text-right font-semibold text-gray-900">
+                            <span className="text-right font-semibold text-app-primary">
                                 {formatPrice(totalItemPrice)} CHF
                             </span>
                         </div>
@@ -79,23 +95,23 @@ const OrderSummary = ({ order, showTitle = true, className = "" }: OrderSummaryP
             </div>
 
             {/* Séparateur */}
-            <div className="border-t border-gray-200 pt-4">
+            <div className="border-t border-app pt-4">
                 {/* Frais de livraison */}
                 <div className="grid grid-cols-4 gap-4 py-2 px-1 text-sm">
-                    <span className="font-medium text-gray-700">Frais de livraison</span>
+                    <span className="font-medium text-app-secondary">Frais de livraison</span>
                     <span></span>
                     <span></span>
-                    <span className="text-right text-gray-600">
+                    <span className="text-right text-app-secondary">
                         {formatPrice(order.deliveryPrice)} CHF
                     </span>
                 </div>
 
                 {/* Total final */}
-                <div className="grid grid-cols-4 gap-4 py-3 px-1 border-t-2 border-gray-300 mt-2">
-                    <span className="font-bold text-lg text-gray-900">Total</span>
+                <div className="grid grid-cols-4 gap-4 py-3 px-1 border-t-2 border-app bg-app-muted rounded mt-2">
+                    <span className="font-bold text-lg text-app-primary">Total</span>
                     <span></span>
                     <span></span>
-                    <span className="text-right font-bold text-lg text-gray-900">
+                    <span className="text-right font-bold text-lg text-app-primary">
                         {formatPrice(order.totalAmount)} CHF
                     </span>
                 </div>

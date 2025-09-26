@@ -90,12 +90,12 @@ const OrderCard = ({
     };
 
     return (
-        <Card className="w-full hover:shadow-md transition-shadow">
+        <Card className="w-full hover:shadow-md transition-shadow modern-black-card border-0">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                        <StatusIcon className="w-5 h-5 text-gray-600" />
-                        <CardTitle className="text-lg">
+                        <StatusIcon className="w-5 h-5 text-app-secondary" />
+                        <CardTitle className="text-lg text-app-primary">
                             Commande #{order._id.slice(-8).toUpperCase()}
                         </CardTitle>
                     </div>
@@ -113,7 +113,7 @@ const OrderCard = ({
                                 variant="ghost"
                                 size="sm"
                                 onClick={onToggleExpanded}
-                                className="text-blue-600 hover:text-blue-800"
+                                className="text-app-primary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             >
                                 {expanded ? "Réduire" : "Voir détails"}
                             </Button>
@@ -121,12 +121,12 @@ const OrderCard = ({
                     </div>
                 </div>
                 
-                <div className="flex items-center justify-between text-sm text-gray-600 mt-2">
+                <div className="flex items-center justify-between text-sm text-app-secondary mt-2">
                     <div className="flex items-center space-x-1">
                         <Calendar className="w-4 h-4" />
                         <span>{formatDate(order.createdAt)}</span>
                     </div>
-                    <div className="font-semibold text-lg text-gray-900">
+                    <div className="font-semibold text-lg text-app-primary">
                         {formatPrice(order.totalAmount)}
                     </div>
                 </div>
@@ -137,44 +137,51 @@ const OrderCard = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="space-y-2">
                         <div className="flex items-center space-x-2 text-sm">
-                            <User className="w-4 h-4 text-gray-500" />
-                            <span className="font-medium">{order.deliveryDetails.name}</span>
+                            <User className="w-4 h-4 text-app-tertiary" />
+                            <span className="font-medium text-app-primary">
+                                {order.user ? `${order.user.firstname} ${order.user.name}` : order.deliveryDetails.name}
+                            </span>
                         </div>
                         
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
-                            <Phone className="w-4 h-4 text-gray-500" />
-                            <span>{order.deliveryDetails.zipCode || "N/A"}</span>
+                        <div className="flex items-center space-x-2 text-sm text-app-secondary">
+                            <Phone className="w-4 h-4 text-app-tertiary" />
+                            <span>
+                                {order.user && order.user.phoneNumber && order.user.indicatifTel 
+                                    ? `${order.user.indicatifTel} ${order.user.phoneNumber}`
+                                    : "Numéro non disponible"
+                                }
+                            </span>
                         </div>
                     </div>
                     
                     <div className="space-y-2">
                         <div className="text-sm">
-                            <span className="font-medium">{getTotalItems()} article(s)</span>
+                            <span className="font-medium text-app-primary">{getTotalItems()} article(s)</span>
                         </div>
                         
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-app-secondary">
                             {order.deliveryDetails.email}
                         </div>
                     </div>
                 </div>
 
                 {/* Gestion du statut */}
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-4">
-                    <span className="text-sm font-medium text-gray-700">Statut de la commande :</span>
+                <div className="flex items-center justify-between p-3 bg-app-surface rounded-lg mb-4">
+                    <span className="text-sm font-medium text-app-primary">Statut de la commande :</span>
                     <Select 
                         value={selectedStatus}
                         onValueChange={handleStatusChange}
                         disabled={isUpdatingStatus}
                     >
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-[180px] h-8 border-0 text-app-secondary select-trigger-enhanced">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="en attente">En attente</SelectItem>
-                            <SelectItem value="payé">Payé</SelectItem>
-                            <SelectItem value="envoyé">Envoyé</SelectItem>
-                            <SelectItem value="livré">Livré</SelectItem>
-                            <SelectItem value="annulé">Annulé</SelectItem>
+                        <SelectContent className="dropdown-menu animate-fade-in">
+                            <SelectItem value="en attente" className="text-app-primary select-item-enhanced">En attente</SelectItem>
+                            <SelectItem value="payé" className="text-app-primary select-item-enhanced">Payé</SelectItem>
+                            <SelectItem value="envoyé" className="text-app-primary select-item-enhanced">Envoyé</SelectItem>
+                            <SelectItem value="livré" className="text-app-primary select-item-enhanced">Livré</SelectItem>
+                            <SelectItem value="annulé" className="text-app-primary select-item-enhanced">Annulé</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -185,12 +192,12 @@ const OrderCard = ({
                         <Separator />
                         
                         {/* Adresse de livraison */}
-                        <div className="p-3 bg-blue-50 rounded-lg">
+                        <div className="p-3 modern-black-card border-0 rounded-lg hover:bg-app-surface transition-colors cursor-pointer">
                             <div className="flex items-center space-x-2 mb-2">
-                                <MapPin className="w-4 h-4 text-blue-600" />
-                                <span className="font-medium text-blue-900">Adresse de livraison</span>
+                                <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                <span className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">Adresse de livraison</span>
                             </div>
-                            <div className="text-sm space-y-1 text-blue-800">
+                            <div className="text-sm space-y-1 text-app-secondary">
                                 <p>{order.deliveryDetails.addressLine1}</p>
                                 <p>{order.deliveryDetails.zipCode} {order.deliveryDetails.city}</p>
                                 <p>{order.deliveryDetails.state} - {order.deliveryDetails.country}</p>
@@ -199,15 +206,15 @@ const OrderCard = ({
 
                         {/* Articles commandés */}
                         <div>
-                            <h4 className="font-medium text-gray-900 mb-3">Articles commandés</h4>
+                            <h4 className="font-medium text-app-primary mb-3">Articles commandés</h4>
                             <div className="space-y-2">
                                 {order.cartItems.map((item, index) => (
-                                    <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                                    <div key={index} className="flex justify-between items-center p-2 bg-app-surface rounded hover:bg-app-muted transition-colors">
                                         <div>
-                                            <span className="font-medium">{item.name}</span>
-                                            <span className="text-gray-600 text-sm ml-2">x{item.quantity}</span>
+                                            <span className="font-medium text-app-primary">{item.name}</span>
+                                            <span className="text-app-secondary text-sm ml-2">x{item.quantity}</span>
                                         </div>
-                                        <span className="font-medium">
+                                        <span className="font-medium text-app-primary">
                                             {formatPrice(item.price * item.quantity)}
                                         </span>
                                     </div>
@@ -216,17 +223,17 @@ const OrderCard = ({
                                 <Separator className="my-2" />
                                 
                                 {/* Total avec frais de livraison */}
-                                <div className="flex justify-between items-center p-2 bg-gray-100 rounded font-medium">
+                                <div className="flex justify-between items-center p-2 bg-app-muted rounded font-medium text-app-primary hover:bg-app-surface transition-colors">
                                     <span>Sous-total</span>
                                     <span>{formatPrice(order.totalAmount - (order.deliveryPrice || 500))}</span>
                                 </div>
                                 
-                                <div className="flex justify-between items-center p-2 text-sm text-gray-600">
+                                <div className="flex justify-between items-center p-2 text-sm text-app-secondary hover:text-app-primary transition-colors">
                                     <span>Frais de livraison</span>
                                     <span>{formatPrice(order.deliveryPrice || 500)}</span>
                                 </div>
                                 
-                                <div className="flex justify-between items-center p-2 bg-gray-900 text-white rounded font-bold">
+                                <div className="flex justify-between items-center p-2 modern-black-card text-app-primary rounded font-bold border-0 hover:bg-app-surface transition-colors">
                                     <span>Total</span>
                                     <span>{formatPrice(order.totalAmount)}</span>
                                 </div>
@@ -235,12 +242,12 @@ const OrderCard = ({
 
                         {/* Informations de paiement */}
                         {order.paymentIntentId && (
-                            <div className="p-3 bg-green-50 rounded-lg">
+                            <div className="p-3 modern-black-card border-0 rounded-lg hover:bg-app-surface transition-colors cursor-pointer">
                                 <div className="flex items-center space-x-2 mb-2">
-                                    <CreditCard className="w-4 h-4 text-green-600" />
-                                    <span className="font-medium text-green-900">Paiement confirmé</span>
+                                    <CreditCard className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                    <span className="font-medium text-green-600 dark:text-green-400 hover:text-green-500 dark:hover:text-green-300 transition-colors">Paiement confirmé</span>
                                 </div>
-                                <p className="text-sm text-green-800 font-mono">
+                                <p className="text-sm text-app-secondary font-mono hover:text-app-primary transition-colors">
                                     ID: {order.paymentIntentId.slice(-12)}
                                 </p>
                             </div>

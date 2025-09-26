@@ -28,9 +28,9 @@ const OrderAccordion = ({ order, defaultExpanded = true }: Props) => {
     const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
     /**
-     * Détermine si une commande est terminée (delivered)
+     * Détermine si une commande est terminée (livrée)
      */
-    const isCompleted = order.status === "delivered";
+    const isCompleted = order.status === "livrée";
 
     /**
      * Formate un ID de commande pour affichage court
@@ -74,15 +74,15 @@ const OrderAccordion = ({ order, defaultExpanded = true }: Props) => {
     };
 
     return (
-        <div className={`rounded-lg border transition-all duration-200 overflow-hidden ${
+        <div className={`rounded-lg border-0 transition-all duration-200 overflow-hidden ${
             isCompleted 
-                ? 'bg-green-50 border-green-200 hover:border-green-300' 
-                : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-md'
+                ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 hover:border-green-300 dark:hover:border-green-700' 
+                : 'modern-black-card hover:shadow-md'
         }`}>
             
             {/* En-tête cliquable */}
             <div 
-                className="p-5 cursor-pointer hover:bg-gray-50 transition-colors"
+                className="p-5 cursor-pointer hover:bg-app-surface transition-colors"
                 onClick={toggleExpanded}
                 role="button"
                 tabIndex={0}
@@ -100,14 +100,14 @@ const OrderAccordion = ({ order, defaultExpanded = true }: Props) => {
                     <div className="flex-1 space-y-2">
                         {/* Ligne 1: ID et Badge statut */}
                         <div className="flex items-center space-x-3 flex-wrap">
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-lg font-semibold text-app-primary">
                                 Commande #{formatOrderId(order._id)}
                             </h3>
                             <OrderStatusBadge status={order.status} size="sm" />
                             
                             {/* Indicateur paiement confirmé */}
                             {order.status === "payé" && (
-                                <div className="flex items-center space-x-1 text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                <div className="flex items-center space-x-1 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded-full">
                                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
@@ -117,14 +117,14 @@ const OrderAccordion = ({ order, defaultExpanded = true }: Props) => {
                         </div>
 
                         {/* Ligne 2: Date et nombre d'articles */}
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                        <div className="flex items-center space-x-4 text-sm text-app-secondary">
                             <span>📅 {formatDate(order.createdAt)}</span>
                             <span>📦 {getTotalItemCount()} article{getTotalItemCount() > 1 ? 's' : ''}</span>
                         </div>
 
                         {/* Ligne 3: Total */}
                         <div className="flex items-center">
-                            <span className="text-lg font-bold text-gray-900">
+                            <span className="text-lg font-bold text-app-primary">
                                 {formatPrice(order.totalAmount)} CHF
                             </span>
                         </div>
@@ -134,7 +134,7 @@ const OrderAccordion = ({ order, defaultExpanded = true }: Props) => {
                     <div className="flex items-center space-x-3 ml-4">
                         {/* Badge "Terminée" pour les commandes livrées */}
                         {isCompleted && (
-                            <span className="text-green-600 text-sm font-medium bg-green-100 px-2 py-1 rounded-full">
+                            <span className="text-green-600 dark:text-green-400 text-sm font-medium bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded-full">
                                 ✅ Terminée
                             </span>
                         )}
@@ -143,13 +143,13 @@ const OrderAccordion = ({ order, defaultExpanded = true }: Props) => {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="p-2 hover:bg-gray-200"
+                            className="p-2 hover:bg-app-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             aria-label={isExpanded ? "Réduire les détails" : "Voir les détails"}
                         >
                             {isExpanded ? (
-                                <ChevronUp className="h-5 w-5 text-gray-600" />
+                                <ChevronUp className="h-5 w-5 text-app-secondary" />
                             ) : (
-                                <ChevronDown className="h-5 w-5 text-gray-600" />
+                                <ChevronDown className="h-5 w-5 text-app-secondary" />
                             )}
                         </Button>
                     </div>
@@ -160,7 +160,7 @@ const OrderAccordion = ({ order, defaultExpanded = true }: Props) => {
             {isExpanded && (
                 <div 
                     id={`order-content-${order._id}`}
-                    className="border-t border-gray-200 bg-gray-50 px-6 py-6 space-y-6 animate-in slide-in-from-top-2 duration-200"
+                    className="border-t border-app bg-app-surface px-6 py-6 space-y-6 animate-in slide-in-from-top-2 duration-200"
                 >
                     {/* En-tête détaillé avec barre de progression */}
                     <OrderStatusHeader order={order} showProgressBar={true} />

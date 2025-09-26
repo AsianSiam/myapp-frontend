@@ -114,25 +114,25 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSave)} className="space-y-4 bg-gray rounded-lg md:p-10">
+            <form onSubmit={form.handleSubmit(onSave)} className="space-y-4 modern-black-bg rounded-lg md:p-10">
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">{title}</h2>                   
+                    <h2 className="text-2xl font-bold mb-4 text-app-primary">{title}</h2>                   
                 </div>
-                <h2 className='font-bold'> Données personnelles</h2>
+                <h2 className='font-bold text-app-primary'>Données personnelles</h2>
                 <div className='flex space-x-4 md:flex-row flex-col'>
                     <FormField control={form.control} name="email" render={({ field }) => (                    
                         <FormItem className='w-full md:w-1/2'>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel className="text-app-primary">Email</FormLabel>
                             <FormControl>
-                                <Input {...field} disabled className='bg-white' />
+                                <Input {...field} disabled className='modern-black-card border-app text-app-primary' />
                             </FormControl>
                     </FormItem>
                 )} />
                     <FormField control={form.control} name="nickname" render={({ field }) => (                    
                         <FormItem className='w-full md:w-1/2'>
-                            <FormLabel>Pseudo</FormLabel>
+                            <FormLabel className="text-app-primary">Pseudo</FormLabel>
                             <FormControl>
-                                <Input {...field}  className='bg-white' />
+                                <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -142,18 +142,18 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                 <div className='flex space-x-4 md:flex-row flex-col'>
                     <FormField control={form.control} name="name" render={({ field }) => (                    
                     <FormItem className='w-full md:w-1/2'>
-                        <FormLabel>Nom</FormLabel>
+                        <FormLabel className="text-app-primary">Nom</FormLabel>
                         <FormControl>
-                            <Input {...field}  className='bg-white' />
+                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                 )} />
                 <FormField control={form.control} name="firstname" render={({ field }) => (                    
                     <FormItem className='w-full md:w-1/2'>
-                        <FormLabel>Prénom</FormLabel>
+                        <FormLabel className="text-app-primary">Prénom</FormLabel>
                         <FormControl>
-                            <Input {...field}  className='bg-white' />
+                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -171,13 +171,13 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
 
                     return (
                         <FormItem className='w-full md:w-1/3'>
-                            <FormLabel>Indicatif de téléphone</FormLabel>
+                            <FormLabel className="text-app-primary">Indicatif de téléphone</FormLabel>
                             <FormControl>
                                 <div className="relative">
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-between bg-white"
+                                        className="w-full justify-between modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors"
                                         onClick={() => {
                                             console.log("🟢 Manual button clicked!");
                                             console.log("🟢 Before toggle:", indicatifOpen);
@@ -200,13 +200,13 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                                 onClick={() => setIndicatifOpen(false)}
                                             />
                                             <div 
-                                                className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-60 overflow-hidden"
+                                                className="absolute top-full left-0 right-0 dropdown-menu animate-fade-in max-h-60 overflow-hidden"
                                                 style={{ zIndex: 9999 }}
                                             >
                                                 <div className="p-2">
                                                     <Input
                                                         placeholder="Rechercher un pays..."
-                                                        className="mb-2"
+                                                        className="mb-2 modern-black-card border-app text-app-primary"
                                                         value={searchTerm}
                                                         onChange={(e) => {
                                                             console.log("🟢 Search term:", e.target.value);
@@ -217,14 +217,14 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                                 </div>
                                                 <div className="max-h-48 overflow-auto">
                                                     {filteredIndicatifs.length === 0 ? (
-                                                        <div className="px-4 py-2 text-gray-500 text-center">
+                                                        <div className="px-4 py-2 text-app-tertiary text-center">
                                                             Aucun pays trouvé
                                                         </div>
                                                     ) : (
                                                         filteredIndicatifs.map((indicatif) => (
                                                             <div
                                                                 key={indicatif.value}
-                                                                className="flex items-center px-2 py-2 hover:bg-gray-100 cursor-pointer"
+                                                                className="flex items-center px-2 py-2 hover:bg-app-surface cursor-pointer text-app-primary select-item-enhanced"
                                                                 onClick={() => {
                                                                     console.log("🟢 Manual selected:", indicatif.value);
                                                                     field.onChange(indicatif.value);
@@ -254,14 +254,14 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                 }} />
                 <FormField control={form.control} name="phoneNumber" render={({ field }) => (                    
                     <FormItem className='w-full md:w-1/2'>
-                        <FormLabel>Numéro de téléphone</FormLabel>
+                        <FormLabel className="text-app-primary">Numéro de téléphone</FormLabel>
                         <FormControl>
                             <Input
                                 {...field}
                                 type="number"
                                 value={field.value ?? ""}
                                 onChange={e => field.onChange(e.target.value === "" ? undefined : +e.target.value)}
-                                className='bg-white'
+                                className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors'
                             />
                         </FormControl>
                         <FormMessage />
@@ -270,12 +270,12 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                 </div>                                
                 <FormField control={form.control} name="birthdate" render={({ field }) => (                    
                     <FormItem className='w-full md:w-1/2'>
-                        <FormLabel>Date de naissance</FormLabel>
+                        <FormLabel className="text-app-primary">Date de naissance</FormLabel>
                         <FormControl>
                             <Input
                                 {...field}
                                 type="date"
-                                className='bg-white'
+                                className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors'
                             />
                         </FormControl>
                         <FormMessage />
@@ -290,13 +290,13 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                 
                     return (
                         <FormItem className='w-full md:w-1/2'>
-                            <FormLabel>Langue de communication</FormLabel>
+                            <FormLabel className="text-app-primary">Langue de communication</FormLabel>
                             <FormControl>
                                 <div className="relative">
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-between bg-white"
+                                        className="w-full justify-between modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors"
                                         onClick={() => {
                                             console.log("🟢 Language manual button clicked!");
                                             setLanguageOpen(!languageOpen);
@@ -317,13 +317,13 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                                 onClick={() => setLanguageOpen(false)}
                                             />
                                             <div 
-                                                className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-60 overflow-hidden"
+                                                className="absolute top-full left-0 right-0 dropdown-menu animate-fade-in max-h-60 overflow-hidden"
                                                 style={{ zIndex: 9999 }}
                                             >
                                                 <div className="p-2">
                                                     <Input
                                                         placeholder="Rechercher une langue..."
-                                                        className="mb-2"
+                                                        className="mb-2 modern-black-card border-app text-app-primary"
                                                         value={languageSearchTerm}
                                                         onChange={(e) => {
                                                             console.log("🟢 Language search:", e.target.value);
@@ -334,14 +334,14 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                                 </div>
                                                 <div className="max-h-48 overflow-auto">
                                                     {filteredLanguages.length === 0 ? (
-                                                        <div className="px-4 py-2 text-gray-500 text-center">
+                                                        <div className="px-4 py-2 text-app-tertiary text-center">
                                                             Aucune langue trouvée
                                                         </div>
                                                     ) : (
                                                         filteredLanguages.map((language) => (
                                                             <div
                                                                 key={language.value}
-                                                                className="flex items-center px-2 py-2 hover:bg-gray-100 cursor-pointer"
+                                                                className="flex items-center px-2 py-2 hover:bg-app-surface cursor-pointer text-app-primary select-item-enhanced"
                                                                 onClick={() => {
                                                                     console.log("🟢 Language selected:", language.value);
                                                                     field.onChange(language.value);
@@ -369,12 +369,12 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                         </FormItem>
                     );
                 }} />
-                <h2 className='font-bold'> Adresse</h2>
+                <h2 className='font-bold text-app-primary'>Adresse</h2>
                 <FormField control={form.control} name="addressLine1" render={({ field }) => (                    
                     <FormItem className='flex-1'>
-                        <FormLabel>Rue et numéro</FormLabel>
+                        <FormLabel className="text-app-primary">Rue et numéro</FormLabel>
                         <FormControl>
-                            <Input {...field} className='bg-white' />
+                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -382,14 +382,14 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                 <div className='flex space-x-4 md:flex-row flex-col'>
                 <FormField control={form.control} name="zipCode" render={({ field }) => (                    
                     <FormItem className=''>
-                        <FormLabel>Code postal</FormLabel>
+                        <FormLabel className="text-app-primary">Code postal</FormLabel>
                         <FormControl>
                             <Input
                                 {...field}
                                 type="number"
                                 value={field.value ?? ""}
                                 onChange={e => field.onChange(e.target.value === "" ? undefined : +e.target.value)}
-                                className='bg-white'
+                                className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors'
                             />
                         </FormControl>
                         <FormMessage />
@@ -397,9 +397,9 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                 )} />
                 <FormField control={form.control} name="city" render={({ field }) => (                    
                     <FormItem className='w-full md:w-1/2'>
-                        <FormLabel>Ville</FormLabel>
+                        <FormLabel className="text-app-primary">Ville</FormLabel>
                         <FormControl>
-                            <Input {...field} className='bg-white' />
+                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -408,18 +408,18 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                 <div className='flex space-x-4 md:flex-row flex-col'>
                     <FormField control={form.control} name="state" render={({ field }) => (                    
                     <FormItem>
-                        <FormLabel>Canton</FormLabel>
+                        <FormLabel className="text-app-primary">Canton</FormLabel>
                         <FormControl>
-                            <Input {...field} className='bg-white' />
+                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                 )} />
                     <FormField control={form.control} name="country" render={({ field }) => (                    
                     <FormItem className='w-full md:w-1/2'>
-                        <FormLabel>Pays</FormLabel>
+                        <FormLabel className="text-app-primary">Pays</FormLabel>
                         <FormControl>
-                            <Input {...field} className='bg-white' />
+                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -435,12 +435,12 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                     type="button" 
                                     variant="outline" 
                                     onClick={onCancel}
-                                    className="hover:bg-gray-500"
+                                    className="border-app hover:bg-app-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                 >
                                     Annuler
                                 </Button>
                             )}
-                            <Button type="submit" className='bg-gray-300 hover:bg-gray-500 text-black'>
+                            <Button type="submit" className='search-button'>
                                 {buttonText}
                             </Button>                            
                         </>

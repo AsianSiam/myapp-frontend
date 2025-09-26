@@ -47,6 +47,9 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
                 order._id.toLowerCase().includes(search) ||
                 order.deliveryDetails.name.toLowerCase().includes(search) ||
                 order.deliveryDetails.email.toLowerCase().includes(search) ||
+                (order.user && order.user.name && order.user.name.toLowerCase().includes(search)) ||
+                (order.user && order.user.firstname && order.user.firstname.toLowerCase().includes(search)) ||
+                (order.user && order.user.phoneNumber && order.user.phoneNumber.toString().includes(search)) ||
                 order.cartItems.some(item => item.name.toLowerCase().includes(search))
             );
         }
@@ -106,36 +109,36 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
     return (
         <div className={`space-y-4 ${className}`}>
             {/* Statistiques rapides */}
-            <Card>
+            <Card className="modern-black-card border-0">
                 <CardContent className="p-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-blue-600">{statistics.total}</div>
-                            <div className="text-xs text-gray-600">Total</div>
+                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{statistics.total}</div>
+                            <div className="text-xs text-app-secondary">Total</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-yellow-600">{statistics["en attente"]}</div>
-                            <div className="text-xs text-gray-600">En attente</div>
+                            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{statistics["en attente"]}</div>
+                            <div className="text-xs text-app-secondary">En attente</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-green-600">{statistics.payé}</div>
-                            <div className="text-xs text-gray-600">Payées</div>
+                            <div className="text-2xl font-bold text-green-600 dark:text-green-400">{statistics.payé}</div>
+                            <div className="text-xs text-app-secondary">Payées</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-blue-600">{statistics.envoyé}</div>
-                            <div className="text-xs text-gray-600">Envoyées</div>
+                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{statistics.envoyé}</div>
+                            <div className="text-xs text-app-secondary">Envoyées</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-green-600">{statistics.livré}</div>
-                            <div className="text-xs text-gray-600">Livrées</div>
+                            <div className="text-2xl font-bold text-green-600 dark:text-green-400">{statistics.livré}</div>
+                            <div className="text-xs text-app-secondary">Livrées</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-red-600">{statistics.annulé}</div>
-                            <div className="text-xs text-gray-600">Annulées</div>
+                            <div className="text-2xl font-bold text-red-600 dark:text-red-400">{statistics.annulé}</div>
+                            <div className="text-xs text-app-secondary">Annulées</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-gray-900">{formatRevenue(statistics.totalRevenue)}</div>
-                            <div className="text-xs text-gray-600">CA Total</div>
+                            <div className="text-2xl font-bold text-app-primary">{formatRevenue(statistics.totalRevenue)}</div>
+                            <div className="text-xs text-app-secondary">CA Total</div>
                         </div>
                     </div>
                 </CardContent>
@@ -144,12 +147,12 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
             {/* Barre de recherche et bouton filtres */}
             <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
                 <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-app-tertiary" />
                     <Input
-                        placeholder="Rechercher par ID commande, nom client, email, ou article..."
+                        placeholder="Rechercher par ID commande, nom, prénom, email, téléphone, ou article..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 pr-4"
+                        className="pl-10 pr-4 modern-black-card border-0 text-app-primary placeholder:text-app-tertiary"
                     />
                 </div>
                 
@@ -158,7 +161,7 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
                         variant="outline"
                         size="sm"
                         onClick={() => setShowFilters(!showFilters)}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 border-app hover:bg-app-muted"
                     >
                         <Filter className="h-4 w-4" />
                         Filtres
@@ -175,7 +178,7 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
                             variant="ghost"
                             size="sm"
                             onClick={clearFilters}
-                            className="text-gray-600 hover:text-gray-900"
+                            className="text-app-secondary hover:text-app-primary hover:bg-app-muted"
                         >
                             <X className="h-4 w-4" />
                         </Button>
@@ -185,41 +188,41 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
 
             {/* Filtres avancés */}
             {showFilters && (
-                <Card>
+                <Card className="modern-black-card border-0">
                     <CardContent className="p-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                <label className="text-sm font-medium text-app-primary mb-2 block">
                                     Statut de commande
                                 </label>
                                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="h-8 border-0 text-app-secondary select-trigger-enhanced">
                                         <SelectValue placeholder="Tous les statuts" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Tous les statuts</SelectItem>
-                                        <SelectItem value="en attente">En attente ({statistics["en attente"]})</SelectItem>
-                                        <SelectItem value="payé">Payées ({statistics.payé})</SelectItem>
-                                        <SelectItem value="envoyé">Envoyées ({statistics.envoyé})</SelectItem>
-                                        <SelectItem value="livré">Livrées ({statistics.livré})</SelectItem>
-                                        <SelectItem value="annulé">Annulées ({statistics.annulé})</SelectItem>
+                                    <SelectContent className="dropdown-menu animate-fade-in">
+                                        <SelectItem value="all" className="text-app-primary select-item-enhanced">Tous les statuts</SelectItem>
+                                        <SelectItem value="en attente" className="text-app-primary select-item-enhanced">En attente ({statistics["en attente"]})</SelectItem>
+                                        <SelectItem value="payé" className="text-app-primary select-item-enhanced">Payées ({statistics.payé})</SelectItem>
+                                        <SelectItem value="envoyé" className="text-app-primary select-item-enhanced">Envoyées ({statistics.envoyé})</SelectItem>
+                                        <SelectItem value="livré" className="text-app-primary select-item-enhanced">Livrées ({statistics.livré})</SelectItem>
+                                        <SelectItem value="annulé" className="text-app-primary select-item-enhanced">Annulées ({statistics.annulé})</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                <label className="text-sm font-medium text-app-primary mb-2 block">
                                     Période
                                 </label>
                                 <Select value={dateFilter} onValueChange={setDateFilter}>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="h-8 border-0 text-app-secondary select-trigger-enhanced">
                                         <SelectValue placeholder="Toutes les dates" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Toutes les dates</SelectItem>
-                                        <SelectItem value="today">Aujourd'hui</SelectItem>
-                                        <SelectItem value="week">Cette semaine</SelectItem>
-                                        <SelectItem value="month">Ce mois</SelectItem>
+                                    <SelectContent className="dropdown-menu animate-fade-in">
+                                        <SelectItem value="all" className="text-app-primary select-item-enhanced">Toutes les dates</SelectItem>
+                                        <SelectItem value="today" className="text-app-primary select-item-enhanced">Aujourd'hui</SelectItem>
+                                        <SelectItem value="week" className="text-app-primary select-item-enhanced">Cette semaine</SelectItem>
+                                        <SelectItem value="month" className="text-app-primary select-item-enhanced">Ce mois</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -229,14 +232,14 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
             )}
 
             {/* Résultats */}
-            <div className="flex items-center justify-between text-sm text-gray-600">
+            <div className="flex items-center justify-between text-sm text-app-secondary">
                 <div className="flex items-center gap-2">
                     <span>
                         {filteredOrders.length} commande{filteredOrders.length !== 1 ? "s" : ""} 
                         {filteredOrders.length !== orders.length && ` sur ${orders.length}`}
                     </span>
                     {hasActiveFilters && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-app text-app-secondary">
                             Filtrées
                         </Badge>
                     )}

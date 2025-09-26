@@ -45,12 +45,12 @@ const OrderStatusDetail = ({ order }: Props) => {
     return (
         <div className="space-y-6">
             {/* En-tête avec ID de commande */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                    <span className="text-blue-600 mr-2">📋</span>
+            <div className="bg-app-surface p-4 rounded-lg">
+                <h2 className="text-xl font-semibold text-app-primary flex items-center">
+                    <span className="text-blue-600 dark:text-blue-400 mr-2">📋</span>
                     Commande {formatOrderId(order._id)}
                 </h2>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-app-secondary mt-1">
                     Créée le {new Date(order.createdAt).toLocaleDateString('fr-CH', {
                         year: 'numeric',
                         month: 'long',
@@ -66,21 +66,21 @@ const OrderStatusDetail = ({ order }: Props) => {
 
             {/* Adresse de livraison */}
             <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <span className="text-green-600 mr-2">🚚</span>
+                <h3 className="text-lg font-semibold text-app-primary flex items-center">
+                    <span className="text-green-600 dark:text-green-400 mr-2">🚚</span>
                     Adresse de livraison
                 </h3>
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                    <address className="not-italic text-gray-700 leading-relaxed">
-                        <div className="font-semibold text-gray-900">{address.name}</div>
-                        <div>{address.line1}</div>
-                        <div>{address.cityLine}</div>
-                        <div>{address.countryLine}</div>
+                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                    <address className="not-italic text-green-800 dark:text-green-200 leading-relaxed">
+                        <div className="font-semibold text-green-900 dark:text-green-100">{address.name}</div>
+                        <div className="text-green-800 dark:text-green-200">{address.line1}</div>
+                        <div className="text-green-800 dark:text-green-200">{address.cityLine}</div>
+                        <div className="text-green-800 dark:text-green-200">{address.countryLine}</div>
                         {/* Email de contact */}
                         {order.deliveryDetails.email && (
-                            <div className="mt-2 pt-2 border-t border-green-300">
-                                <span className="text-sm text-gray-600">Contact: </span>
-                                <span className="text-sm font-medium">{order.deliveryDetails.email}</span>
+                            <div className="mt-2 pt-2 border-t border-green-300 dark:border-green-700">
+                                <span className="text-sm text-green-700 dark:text-green-300">Contact: </span>
+                                <span className="text-sm font-medium text-green-900 dark:text-green-100">{order.deliveryDetails.email}</span>
                             </div>
                         )}
                     </address>
@@ -94,7 +94,7 @@ const OrderStatusDetail = ({ order }: Props) => {
             <OrderSummary 
                 order={order} 
                 showTitle={true}
-                className="bg-gray-50 p-4 rounded-lg"
+                className="bg-app-surface p-4 rounded-lg"
             />
         </div>
     );

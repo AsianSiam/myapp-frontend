@@ -62,7 +62,7 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
                 {/* Statut de la commande */}
                 <div className="flex flex-col space-y-2">
                     <div className="flex items-center space-x-3">
-                        <h2 className="text-2xl font-bold text-gray-900">
+                        <h2 className="text-2xl font-bold text-app-primary">
                             Statut de la commande
                         </h2>
                         <OrderStatusBadge 
@@ -71,7 +71,7 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
                             showDescription={false}
                         />
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-app-secondary">
                         Commande passée le {getOrderDate()}
                     </p>
                 </div>
@@ -79,11 +79,11 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
                 {/* Date de livraison */}
                 <div className="text-right lg:text-left">
                     <div className="flex flex-col space-y-1">
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-app-secondary">
                             {isDelivered ? "Livrée le :" : "Livraison prévue :"}
                         </span>
                         <span className={`text-lg font-bold ${
-                            isDelivered ? "text-green-600" : "text-blue-600"
+                            isDelivered ? "text-green-600 dark:text-green-400" : "text-blue-600 dark:text-blue-400"
                         }`}>
                             {isDelivered ? 
                                 new Date(order.createdAt).toLocaleDateString('fr-CH', {
@@ -105,7 +105,7 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
                     <OrderProgressBar status={order.status} />
                     
                     {/* Description du statut actuel */}
-                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
                         <OrderStatusBadge 
                             status={order.status} 
                             size="sm" 
@@ -118,10 +118,10 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
 
             {/* Messages spéciaux selon le statut */}
             {order.status === "en attente" && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
                     <div className="flex items-center">
-                        <span className="text-yellow-600 mr-2">⏳</span>
-                        <span className="text-yellow-800 font-medium">
+                        <span className="text-yellow-600 dark:text-yellow-400 mr-2">⏳</span>
+                        <span className="text-yellow-800 dark:text-yellow-300 font-medium">
                             Commande reçue ! En attente de confirmation de paiement.
                         </span>
                     </div>
@@ -129,10 +129,10 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
             )}
 
             {order.status === "payé" && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                     <div className="flex items-center">
-                        <span className="text-green-600 mr-2">✅</span>
-                        <span className="text-green-800 font-medium">
+                        <span className="text-green-600 dark:text-green-400 mr-2">✅</span>
+                        <span className="text-green-800 dark:text-green-300 font-medium">
                             Paiement confirmé ! Votre commande va être préparée.
                         </span>
                     </div>
@@ -140,10 +140,10 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
             )}
 
             {order.status === "livré" && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                     <div className="flex items-center">
-                        <span className="text-green-600 mr-2">🎉</span>
-                        <span className="text-green-800 font-medium">
+                        <span className="text-green-600 dark:text-green-400 mr-2">🎉</span>
+                        <span className="text-green-800 dark:text-green-300 font-medium">
                             Commande livrée avec succès ! Merci pour votre achat.
                         </span>
                     </div>

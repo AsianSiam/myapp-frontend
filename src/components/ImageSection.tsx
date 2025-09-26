@@ -77,11 +77,11 @@ const ImageSection = ({ existingImages = [], onImagesChange, onPermanentDelete, 
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5 text-slate-600" />
-                <label className="text-base font-semibold text-slate-800">
+                <ImageIcon className="h-5 w-5 text-app-secondary" />
+                <label className="text-base font-semibold text-app-primary">
                     Images de l'article
                 </label>
-                <span className="text-sm text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                <span className="text-sm text-app-secondary bg-app-muted px-2 py-1 rounded-full">
                     {totalImages}/{maxImages}
                 </span>
             </div>
@@ -92,7 +92,7 @@ const ImageSection = ({ existingImages = [], onImagesChange, onPermanentDelete, 
                     {/* Images existantes */}
                     {currentExistingImages.map((imageUrl, index) => (
                         <div key={`existing-${index}`} className="relative group">
-                            <div className="relative overflow-hidden rounded-xl border-2 border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-all duration-200">
+                            <div className="relative overflow-hidden rounded-xl border-2 border-app bg-app-surface shadow-sm hover:shadow-md transition-all duration-200">
                                 <img
                                     src={imageUrl}
                                     alt={`Image ${index + 1}`}
@@ -120,7 +120,7 @@ const ImageSection = ({ existingImages = [], onImagesChange, onPermanentDelete, 
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
                                 )}
-                                <div className="absolute bottom-2 left-2 bg-slate-800 bg-opacity-80 text-white text-xs px-2 py-1 rounded-md font-medium">
+                                <div className="absolute bottom-2 left-2 bg-app-primary bg-opacity-80 text-white text-xs px-2 py-1 rounded-md font-medium">
                                     #{index + 1}
                                 </div>
                             </div>
@@ -164,16 +164,16 @@ const ImageSection = ({ existingImages = [], onImagesChange, onPermanentDelete, 
                             onChange={handleFileSelect}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                         />
-                        <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 bg-slate-50 hover:bg-slate-100 hover:border-blue-400 transition-all duration-200 text-center">
+                        <div className="border-2 border-dashed border-app rounded-xl p-6 bg-app-muted hover:bg-app-surface hover:border-blue-400 transition-all duration-200 text-center">
                             <div className="flex flex-col items-center gap-3">
                                 <div className="bg-blue-100 p-3 rounded-full">
                                     <Upload className="h-6 w-6 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="text-base font-medium text-slate-700">
+                                    <p className="text-base font-medium text-app-primary">
                                         Cliquez pour ajouter des images
                                     </p>
-                                    <p className="text-sm text-slate-500 mt-1">
+                                    <p className="text-sm text-app-secondary mt-1">
                                         Formats supportés: JPG, PNG, WEBP (max 5MB par image)
                                     </p>
                                 </div>
