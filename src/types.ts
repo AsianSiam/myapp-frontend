@@ -17,7 +17,7 @@ language: string;
 
 export type CheckoutSessionRequest = {
     cartItems: {
-        menuItemId: string;
+        articleId: string;
         name: string;
         quantity: string;
         price: number;
@@ -35,13 +35,13 @@ export type CheckoutSessionRequest = {
 };
 
 export type CartItem = {
-    menuItemId: string;
+    articleId: string;
     name: string;
     quantity: number;
     price: number;
 };
 
-export type OrderStatus = "placed" | "paid" | "inProgress" | "outForDelivery" | "delivered";
+export type OrderStatus = "en attente" | "payé" | "envoyé" | "livré" | "annulé";
 
 export type Order = {
     _id: string;

@@ -55,3 +55,44 @@ export const useCreateCheckoutSession = () => {
         }  
         return { createCheckoutSession, isLoading };
 };
+
+type UpdateOrderStatusRequest = {
+    orderId: string;
+    status: string;
+};
+
+export const useUpdateOrderStatus = () => {
+    const { getAccessTokenSilently } = useAuth0();
+
+    const updateOrderStatusRequest = async (updateStatusOrderRequest: UpdateOrderStatusRequest) => {
+        const accessToken = await getAccessTokenSilently();
+
+        const response = await fetch(`${API_BASE_URL}/api/order/${updateStatusOrderRequest.orderId}/status`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: updateStatusOrderRequest.status }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update status");
+        }
+
+        return response.json();
+    };
+
+    const { mutateAsync: updateOrderStatus, isLoading, isError, isSuccess, reset } = useMutation(updateOrderStatusRequest);
+
+    if (isError) {
+        toast.error("Impossible de mettre à jour le statut de la commande");
+        reset();
+    }
+
+    if (isSuccess) {
+        toast.success("Statut de la commande mis à jour !");
+    }
+
+    return { updateOrderStatus, isLoading };
+};

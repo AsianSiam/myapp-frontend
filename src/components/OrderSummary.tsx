@@ -58,7 +58,7 @@ const OrderSummary = ({ order, showTitle = true, className = "" }: OrderSummaryP
                     
                     return (
                         <div 
-                            key={item.menuItemId || index}
+                            key={item.articleId || index}
                             className="grid grid-cols-4 gap-4 py-2 px-1 hover:bg-gray-50 rounded transition-colors"
                         >
                             <span className="font-medium text-gray-900 truncate" title={item.name}>

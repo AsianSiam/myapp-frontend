@@ -1,17 +1,23 @@
 import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { useAuth0 } from "@auth0/auth0-react"
+import { useIsAdmin } from "@/api/AdminApi"
 
 const MobileNavLinks = () => {
     const { logout } = useAuth0();
+    const { isAdmin, isLoading: isLoadingAdmin } = useIsAdmin();
+    
     return (
         <>
         <Link to="/user-profile" className="flex bg-white items-center font-bold hover:text-gray-500">
             Profil Utilisateur
         </Link>
-        <Link to="/manage-shop" className="flex bg-white items-center font-bold hover:text-gray-500">
-            Gérer ma Boutique
-        </Link>
+        {/* 🛡️ SÉCURITÉ : Menu admin mobile visible uniquement pour les administrateurs validés */}
+        {!isLoadingAdmin && isAdmin && (
+            <Link to="/manage-shop" className="flex bg-white items-center font-bold hover:text-gray-500 text-blue-600">
+                🔧 Gérer ma Boutique (Admin)
+            </Link>
+        )}
         <Link to="/order-status" className="flex bg-white items-center font-bold hover:text-gray-500">
             Statut de la Commande
         </Link>

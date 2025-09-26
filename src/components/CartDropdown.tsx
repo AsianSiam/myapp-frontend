@@ -35,17 +35,17 @@ const CartDropdown = () => {
 
     return (
         <div className="relative">
-            {/* Bouton du panier */}
+            {/* Bouton du panier - sans cadre */}
             <Button
                 ref={buttonRef}
-                variant="outline"
+                variant="ghost"
                 size="lg"
-                className="relative bg-white hover:bg-gray-50 border-2 border-blue-200 hover:border-blue-300 transition-all duration-200 shadow-md hover:shadow-lg"
+                className="relative text-app-primary hover:text-accent transition-colors duration-200 p-2 rounded-lg"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <ShoppingCart className="h-5 w-5 text-blue-600" />
+                <ShoppingCart className="h-6 w-6" />
                 {totalItems > 0 && (
-                    <Badge variant="destructive" className="absolute -top-2 -right-2 h-6 w-6 flex items-center justify-center text-xs p-0 bg-red-500 hover:bg-red-600 animate-pulse">
+                    <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs p-0 bg-red-500 hover:bg-red-600 animate-pulse border-2 border-app">
                         {totalItems > 99 ? '99+' : totalItems}
                     </Badge>
                 )}
@@ -58,19 +58,19 @@ const CartDropdown = () => {
                     className="fixed top-20 right-6 w-96 z-50 transform origin-top-right animate-in slide-in-from-top-2 duration-200"
                     style={{ maxHeight: 'calc(100vh - 6rem)' }}
                 >
-                    <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl backdrop-blur-sm border border-gray-200/50 shadow-2xl overflow-hidden">
+                    <div className="app-card shadow-2xl overflow-hidden">
                         {/* En-tête fixe avec bouton de fermeture */}
-                        <div className="px-6 pt-6 pb-4 flex-shrink-0">
+                        <div className="px-6 pt-6 pb-4 flex-shrink-0 app-surface">
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-blue-100 rounded-xl">
-                                        <ShoppingCart className="h-6 w-6 text-blue-600" />
+                                    <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-xl">
+                                        <ShoppingCart className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-bold text-gray-800">
+                                        <h2 className="text-2xl font-bold text-app-primary">
                                             Mon Panier
                                         </h2>
-                                        <p className="text-gray-600">
+                                        <p className="text-app-secondary">
                                             {totalItems} article{totalItems !== 1 ? 's' : ''} • CHF {(getTotalPrice() / 100).toFixed(2)}
                                         </p>
                                     </div>
@@ -79,30 +79,30 @@ const CartDropdown = () => {
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => setIsOpen(false)}
-                                    className="h-8 w-8 p-0 hover:bg-gray-200 rounded-lg"
+                                    className="h-8 w-8 p-0 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg text-app-secondary hover:text-app-primary"
                                 >
                                     <X className="h-4 w-4" />
                                 </Button>
                             </div>
                             
                             {/* Status utilisateur */}
-                            <div className="p-4 bg-white/80 rounded-xl border border-gray-200 backdrop-blur-sm">
+                            <div className="p-4 app-card backdrop-blur-sm">
                                 <div className="flex items-center gap-3">
                                     {isAuthenticated ? (
                                         <>
-                                            <div className="p-1.5 bg-green-100 rounded-lg">
-                                                <User className="h-4 w-4 text-green-600" />
+                                            <div className="p-1.5 bg-green-100 dark:bg-green-900 rounded-lg">
+                                                <User className="h-4 w-4 text-green-600 dark:text-green-400" />
                                             </div>
-                                            <span className="text-sm text-green-700 font-medium">
+                                            <span className="text-sm text-green-700 dark:text-green-400 font-medium">
                                                 Connecté • {user?.name || user?.email}
                                             </span>
                                         </>
                                     ) : (
                                         <>
-                                            <div className="p-1.5 bg-amber-100 rounded-lg">
-                                                <LogIn className="h-4 w-4 text-amber-600" />
+                                            <div className="p-1.5 bg-amber-100 dark:bg-amber-900 rounded-lg">
+                                                <LogIn className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                                             </div>
-                                            <span className="text-sm text-amber-700 font-medium">
+                                            <span className="text-sm text-amber-700 dark:text-amber-400 font-medium">
                                                 Connexion requise pour commander
                                             </span>
                                         </>
@@ -114,29 +114,29 @@ const CartDropdown = () => {
                         {/* Contenu avec Accordion */}
                         <Accordion type="single" collapsible defaultValue="cart-content">
                             <AccordionItem value="cart-content" className="border-none">
-                                <AccordionTrigger className="px-6 py-2 hover:no-underline">
-                                    <span className="text-lg font-semibold text-gray-800">
+                                <AccordionTrigger className="px-6 py-2 hover:no-underline text-app-primary">
+                                    <span className="text-lg font-semibold">
                                         Contenu du panier ({totalItems} articles)
                                     </span>
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-0">{cartItems.length === 0 ? (
                                     <div className="flex items-center justify-center flex-col gap-6 px-6 py-12">
                                         <div className="relative">
-                                            <div className="p-6 bg-white/80 rounded-full shadow-lg">
-                                                <ShoppingCart className="h-16 w-16 text-gray-400" />
+                                            <div className="p-6 app-card rounded-full shadow-lg">
+                                                <ShoppingCart className="h-16 w-16 text-app-tertiary" />
                                             </div>
                                             <div className="absolute -bottom-2 -right-2 p-1 bg-blue-500 rounded-full">
                                                 <Plus className="h-4 w-4 text-white" />
                                             </div>
                                         </div>
                                         <div className="text-center space-y-2">
-                                            <h3 className="text-lg font-semibold text-gray-700">Votre panier est vide</h3>
-                                            <p className="text-gray-500 text-sm">Découvrez nos articles et ajoutez vos favoris !</p>
+                                            <h3 className="text-lg font-semibold text-app-primary">Votre panier est vide</h3>
+                                            <p className="text-app-secondary text-sm">Découvrez nos articles et ajoutez vos favoris !</p>
                                         </div>
                                         <Button 
                                             variant="outline" 
                                             onClick={() => setIsOpen(false)}
-                                            className="bg-white hover:bg-blue-50 text-blue-600 border-blue-200 hover:border-blue-300"
+                                            className="bg-app-surface-elevated hover:bg-app-surface text-blue-600 border-blue-200 hover:border-blue-300"
                                         >
                                             Découvrir nos articles
                                         </Button>
@@ -224,30 +224,30 @@ const CartDropdown = () => {
                                         </div>
 
                                         {/* Section récapitulatif simplifiée */}
-                                        <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200 rounded-b-2xl mt-0 flex-shrink-0">
+                                        <div className="app-card border-t border-app-subtle rounded-b-2xl mt-0 flex-shrink-0">
                                             <div className="p-6">
                                                 {/* En-tête du récapitulatif */}
                                                 <div className="flex items-center gap-3 mb-4">
-                                                    <div className="p-2 bg-blue-100 rounded-xl">
-                                                        <CreditCard className="h-5 w-5 text-blue-600" />
+                                                    <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-xl">
+                                                        <CreditCard className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                                     </div>
-                                                    <h4 className="text-lg font-semibold text-gray-900">Récapitulatif</h4>
+                                                    <h4 className="text-lg font-semibold text-app-primary">Récapitulatif</h4>
                                                 </div>
                                                 
                                                 {/* Détails de prix */}
                                                 <div className="space-y-3 text-sm">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-gray-600">Sous-total ({totalItems} articles)</span>
-                                                        <span className="font-semibold text-gray-900">CHF {(getTotalPrice() / 100).toFixed(2)}</span>
+                                                        <span className="text-app-secondary">Sous-total ({totalItems} articles)</span>
+                                                        <span className="font-semibold text-app-primary">CHF {(getTotalPrice() / 100).toFixed(2)}</span>
                                                     </div>
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-gray-600">Frais de livraison</span>
-                                                        <span className="font-semibold text-green-600">Gratuit</span>
+                                                        <span className="text-app-secondary">Frais de livraison</span>
+                                                        <span className="font-semibold text-green-600 dark:text-green-400">Gratuit</span>
                                                     </div>
-                                                    <Separator className="bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+                                                    <Separator className="bg-gradient-to-r from-transparent via-app-border to-transparent" />
                                                     <div className="flex items-center justify-between text-xl font-bold pt-2">
-                                                        <span className="text-gray-900">Total</span>
-                                                        <span className="text-blue-600">CHF {(getTotalPrice() / 100).toFixed(2)}</span>
+                                                        <span className="text-app-primary">Total</span>
+                                                        <span className="text-blue-600 dark:text-blue-400">CHF {(getTotalPrice() / 100).toFixed(2)}</span>
                                                     </div>
                                                 </div>
                                                 

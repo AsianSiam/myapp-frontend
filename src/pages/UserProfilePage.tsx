@@ -47,47 +47,65 @@ const UserProfilePage = () => {
     }
 
     return (
-        <div>
-            <Tabs defaultValue="profil" value={activeTab} onValueChange={setActiveTab} >
-                <div className="flex justify-between items-center mb-5">
-                <h2 className="text-2xl font-bold">Profil utilisateur</h2>
-                {
-                activeTab === "profil" && (
-                    <button
-                    onClick={() => setActiveTab("manage-profile")}
-                    className="px-4 py-2 bg-slate-500 text-white rounded hover:bg-gray-300 transition"
-                >
-                        Editer profil
-                    </button>
-                )}                
-            </div>
-                <TabsContent value="profil" className="space-y-5 bg-gray-50 pg-8 rounded-lg">
-                    <h2 className="text-xl font-bold">Détails du compte et du profil</h2>
-                    <span className="text-xl font-semibold">Données personnelles</span><br />
-                    <span>{currentUser?.name} {currentUser?.firstname}</span><br />
-                    <span>{currentUser?.email}</span><br />                    
-                    <span>{formatDate(currentUser?.birthdate)}</span><br />                    
-                    <span>
-                      {currentUser?.indicatifTel && indicatifTelList.find(indicatif => indicatif.value === currentUser.indicatifTel)?.label 
-                        ? `${indicatifTelList.find(indicatif => indicatif.value === currentUser.indicatifTel)?.label} (${currentUser.indicatifTel})`
-                        : currentUser?.indicatifTel || 'Indicatif non défini'
-                      } {currentUser?.phoneNumber}
-                    </span><br />
-                    <br />
-                    <span className="text-xl font-semibold">Langue de communication</span><br />
-                    <span>{languages.find(lang => lang.value === currentUser?.language)?.label || currentUser?.language}</span><br />
-                    <br />
-                    <span className="text-xl font-semibold">Pseudo</span><br />
-                    <span>{currentUser?.nickname}</span><br />
-                    <br />
-                    <span className="text-xl font-bold">Adresse</span><br />
-                    <span>{currentUser?.name} {currentUser?.firstname}</span><br />
-                    <span>{currentUser?.addressLine1}</span><br />
-                    <span>{currentUser?.zipCode} {currentUser?.city}</span><br />
-                    <span>{currentUser?.country}</span><br />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <Tabs defaultValue="profil" value={activeTab} onValueChange={setActiveTab}>
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900">Profil utilisateur</h2>
+                    {activeTab === "profil" && (
+                        <button
+                            onClick={() => setActiveTab("manage-profile")}
+                            className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors shadow-sm font-medium"
+                        >
+                            Éditer profil
+                        </button>
+                    )}                
+                </div>
+                <TabsContent value="profil" className="space-y-8">
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Détails du compte et du profil</h2>
+                        
+                        <div className="space-y-6">
+                            <div className="bg-gray-50 rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Données personnelles</h3>
+                                <div className="space-y-2 text-gray-700">
+                                    <p className="font-medium">{currentUser?.name} {currentUser?.firstname}</p>
+                                    <p>{currentUser?.email}</p>                    
+                                    <p>{formatDate(currentUser?.birthdate)}</p>                    
+                                    <p>
+                                      {currentUser?.indicatifTel && indicatifTelList.find(indicatif => indicatif.value === currentUser.indicatifTel)?.label 
+                                        ? `${indicatifTelList.find(indicatif => indicatif.value === currentUser.indicatifTel)?.label} (${currentUser.indicatifTel})`
+                                        : currentUser?.indicatifTel || 'Indicatif non défini'
+                                      } {currentUser?.phoneNumber}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Langue de communication</h3>
+                                <p className="text-gray-700">{languages.find(lang => lang.value === currentUser?.language)?.label || currentUser?.language}</p>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Pseudo</h3>
+                                <p className="text-gray-700">{currentUser?.nickname}</p>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-xl p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Adresse</h3>
+                                <div className="space-y-2 text-gray-700">
+                                    <p className="font-medium">{currentUser?.name} {currentUser?.firstname}</p>
+                                    <p>{currentUser?.addressLine1}</p>
+                                    <p>{currentUser?.zipCode} {currentUser?.city}</p>
+                                    <p>{currentUser?.country}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </TabsContent>
-                <TabsContent value="manage-profile" className="bg-gray-50 p-8 rounded-lg">
-                    <UserProfileForm currentUser={currentUser} onSave={handleUpdateUser} onCancel={handleCancel} isLoading={isUpdateLoading} />
+                <TabsContent value="manage-profile">
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                        <UserProfileForm currentUser={currentUser} onSave={handleUpdateUser} onCancel={handleCancel} isLoading={isUpdateLoading} />
+                    </div>
                 </TabsContent>
             </Tabs>
         </div>

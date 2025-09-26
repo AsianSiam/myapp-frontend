@@ -7,10 +7,6 @@ type Props = {
 };
 const SORT_OPTIONS = [
     {
-        label: "Plus récent",
-        value: "lastUpdate"
-    },
-    {
         label: "Prix croissant",
         value: "priceAsc"
     },
@@ -35,13 +31,13 @@ const SortOptionDropDown = ({ onChange, sortOption }: Props) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="cursor-pointer">
-                <Button variant="outline" className="w-full justify-between">
-                    Sort by: {selectedSortLabel}
+                <Button variant="outline" className="w-full justify-between text-app-primary border-app">
+                    Afficher par : {selectedSortLabel}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="dropdown-menu">
                 {SORT_OPTIONS.map((option) => (
-                <DropdownMenuItem key={option.value} className="cursor-pointer" onClick={() => onChange(option.value)}>
+                <DropdownMenuItem key={option.value} className="cursor-pointer text-app-primary select-item-enhanced" onClick={() => onChange(option.value)}>
                     {option.label}
                 </DropdownMenuItem>
             ))} 

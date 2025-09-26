@@ -3,8 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "@radix-ui/react-separator";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { ORDER_STATUS } from "@/config/order-status-config";
-import { useUpdateMyOrderStatus } from "@/api/MyArticleApi";
+import { ORDER_STATUS_CONFIG } from "@/components/OrderStatusBadge";
+import { useUpdateOrderStatus } from "@/api/OrderApi";
+
+// Créer un tableau des statuts pour le dropdown
+const ORDER_STATUS_OPTIONS = Object.entries(ORDER_STATUS_CONFIG).map(([value, config]) => ({
+    value,
+    label: config.label
+}));
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -12,7 +18,7 @@ type Props = {
 };  
 
 const OrderItemCard = ({ order }: Props) => {
-    const { updateOrderStatus, isLoading } = useUpdateMyOrderStatus();
+    const { updateOrderStatus, isLoading } = useUpdateOrderStatus();
     const [status, setStatus] = useState<OrderStatus>(order.status);
 
     useEffect(() => {
@@ -60,7 +66,7 @@ const OrderItemCard = ({ order }: Props) => {
                             <SelectValue placeholder="Statut" />
                         </SelectTrigger>
                         <SelectContent position="popper" className="bg-white w-100%">
-                            {ORDER_STATUS.map((status) => (
+                            {ORDER_STATUS_OPTIONS.map((status) => (
                                 <SelectItem key={status.value} value={status.value}>
                                     {status.label}
                                 </SelectItem>
@@ -83,7 +89,7 @@ const OrderItemCard = ({ order }: Props) => {
                 {order.cartItems.map((item) => {
                     const totalPrice = item.price * item.quantity;
                     return (
-                        <div className="grid grid-cols-4 gap-4 py-2" key={item.menuItemId}>
+                        <div className="grid grid-cols-4 gap-4 py-2" key={item.articleId}>
                             <span className="font-semibold">{item.name}</span>
                             <span>{item.quantity}</span>
                             <span>{(item.price / 100).toFixed(2)} CHF</span>

@@ -4,7 +4,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { toast } from "sonner";
 import { CheckCircle, LogIn, ArrowLeft, RefreshCw, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 /**
  * PAGE DE CONFIRMATION DE PAIEMENT STRIPE
@@ -67,13 +66,13 @@ const StripeSuccessPage = () => {
                 console.log('📋 Statut commande reçu:', order.status);
                 setOrderDetails(order);
                 
-                if (order.status === 'paid') {
+                if (order.status === 'payé') {
                     setVerificationStatus('success');
                     toast.success("✅ Commande confirmée et payée !", {
                         duration: 4000,
                         description: `Commande #${orderId.slice(-8)} - ${(order.totalAmount / 100).toFixed(2)} CHF`
                     });
-                } else if (order.status === 'placed' && retryCount < 5) {
+                } else if (order.status === 'en attente' && retryCount < 5) {
                     // Retry automatique avec délai progressif
                     setVerificationStatus('pending');
                     const delay = Math.min(3000 * (retryCount + 1), 10000); // Max 10s
@@ -164,14 +163,14 @@ const StripeSuccessPage = () => {
     // AFFICHAGE DE CHARGEMENT AUTH0
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center p-4">
-                <Card className="w-full max-w-md text-center">
-                    <CardContent className="pt-6">
-                        <RefreshCw className="h-12 w-12 text-blue-600 animate-spin mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold mb-2">Chargement...</h2>
-                        <p className="text-muted-foreground">Vérification de l'authentification</p>
-                    </CardContent>
-                </Card>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="min-h-[400px] flex items-center justify-center">
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center">
+                        <RefreshCw className="h-12 w-12 text-gray-600 animate-spin mx-auto mb-4" />
+                        <h2 className="text-xl font-semibold text-gray-900 mb-2">Chargement...</h2>
+                        <p className="text-gray-600">Vérification de l'authentification</p>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -179,69 +178,67 @@ const StripeSuccessPage = () => {
     // GESTION D'ERREUR - Paramètres invalides
     if (success !== "true" || !orderId) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 flex items-center justify-center p-4">
-                <Card className="w-full max-w-md text-center border-red-200">
-                    <CardHeader>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="min-h-[400px] flex items-center justify-center">
+                    <div className="bg-white rounded-2xl shadow-lg border border-red-200 p-8 text-center">
                         <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
-                        <CardTitle className="text-red-800">Erreur de redirection</CardTitle>
-                        <CardDescription>
+                        <h2 className="text-2xl font-bold text-red-800 mb-2">Erreur de redirection</h2>
+                        <p className="text-red-600 mb-6">
                             Les paramètres de paiement sont invalides ou manquants.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button onClick={() => navigate("/")} className="bg-red-600 hover:bg-red-700">
+                        </p>
+                        <Button onClick={() => navigate("/")} className="bg-red-600 hover:bg-red-700 rounded-lg">
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             Retour à l'accueil
                         </Button>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         );
     }
 
     // PAGE PRINCIPALE DE SUCCÈS
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8">
-            <div className="container mx-auto px-4 max-w-2xl">
-                <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-                    <CardHeader className="text-center pb-2">
-                        <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4 animate-pulse" />
-                        <CardTitle className="text-2xl font-bold text-green-800 mb-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-2xl mx-auto">
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                    <div className="text-center p-8 border-b border-gray-200">
+                        <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
+                        <h1 className="text-3xl font-bold text-green-800 mb-2">
                             🎉 Paiement Réussi !
-                        </CardTitle>
-                        <CardDescription className="text-base">
+                        </h1>
+                        <p className="text-gray-600">
                             Votre commande <span className="font-mono font-semibold">#{orderId?.slice(-8)}</span> a été payée avec succès
-                        </CardDescription>
-                    </CardHeader>
+                        </p>
+                    </div>
 
-                    <CardContent className="space-y-6">
+                    <div className="p-8 space-y-6">
                         {/* Statut de vérification */}
                         {verificationStatus === 'checking' && (
-                            <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <RefreshCw className="h-6 w-6 text-blue-600 animate-spin mx-auto mb-2" />
+                            <div className="text-center p-6 bg-blue-50 rounded-xl border border-blue-200">
+                                <RefreshCw className="h-6 w-6 text-blue-600 animate-spin mx-auto mb-3" />
                                 <p className="text-blue-800 font-medium">Vérification en cours...</p>
                             </div>
                         )}
 
                         {verificationStatus === 'success' && orderDetails && (
-                            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                                <h3 className="font-semibold text-green-800 mb-2">✅ Commande Confirmée</h3>
-                                <div className="space-y-1 text-sm text-green-700">
+                            <div className="p-6 bg-green-50 rounded-xl border border-green-200">
+                                <h3 className="font-semibold text-green-800 mb-4">✅ Commande Confirmée</h3>
+                                <div className="space-y-2 text-gray-700">
                                     <p><span className="font-medium">Total:</span> {(orderDetails.totalAmount / 100).toFixed(2)} CHF</p>
-                                    <p><span className="font-medium">Statut:</span> {orderDetails.status === 'paid' ? 'Payée' : 'En cours'}</p>
+                                    <p><span className="font-medium">Statut:</span> {orderDetails.status === 'payé' ? 'Payée' : 'En cours'}</p>
                                     <p><span className="font-medium">Articles:</span> {orderDetails.cartItems?.length || 0} article(s)</p>
                                 </div>
                             </div>
                         )}
 
                         {verificationStatus === 'pending' && !isAuthenticated && (
-                            <div className="text-center p-6 bg-amber-50 rounded-lg border border-amber-200">
+                            <div className="text-center p-6 bg-amber-50 rounded-xl border border-amber-200">
                                 <LogIn className="h-8 w-8 text-amber-600 mx-auto mb-3" />
-                                <h3 className="font-semibold text-amber-800 mb-2">Connectez-vous pour plus de détails</h3>
-                                <p className="text-amber-700 mb-4 text-sm">
+                                <h3 className="font-semibold text-amber-800 mb-3">Connectez-vous pour plus de détails</h3>
+                                <p className="text-amber-700 mb-6">
                                     Votre paiement a été traité, mais vous devez être connecté pour voir les détails de votre commande.
                                 </p>
-                                <Button onClick={handleLogin} className="bg-amber-600 hover:bg-amber-700">
+                                <Button onClick={handleLogin} className="bg-amber-600 hover:bg-amber-700 rounded-lg">
                                     <LogIn className="h-4 w-4 mr-2" />
                                     Se connecter
                                 </Button>
@@ -249,13 +246,13 @@ const StripeSuccessPage = () => {
                         )}
 
                         {verificationStatus === 'error' && (
-                            <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
+                            <div className="text-center p-6 bg-red-50 rounded-xl border border-red-200">
                                 <AlertCircle className="h-8 w-8 text-red-600 mx-auto mb-3" />
-                                <h3 className="font-semibold text-red-800 mb-2">Erreur de vérification</h3>
-                                <p className="text-red-700 mb-4 text-sm">
+                                <h3 className="font-semibold text-red-800 mb-3">Erreur de vérification</h3>
+                                <p className="text-red-700 mb-6">
                                     Impossible de vérifier les détails de la commande pour le moment.
                                 </p>
-                                <Button onClick={handleRetry} variant="outline" className="mr-2">
+                                <Button onClick={handleRetry} variant="outline" className="border-red-300 hover:bg-red-50 rounded-lg">
                                     <RefreshCw className="h-4 w-4 mr-2" />
                                     Réessayer
                                 </Button>
@@ -263,23 +260,23 @@ const StripeSuccessPage = () => {
                         )}
 
                         {/* Actions */}
-                        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                        <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
                             <Button 
                                 onClick={() => navigate("/order-status")} 
-                                className="flex-1"
+                                className="flex-1 bg-gray-700 hover:bg-gray-800 rounded-lg"
                             >
                                 Voir mes commandes
                             </Button>
                             <Button 
                                 onClick={() => navigate("/shop")} 
                                 variant="outline"
-                                className="flex-1"
+                                className="flex-1 border-gray-300 hover:bg-gray-50 rounded-lg"
                             >
                                 Continuer mes achats
                             </Button>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         </div>
     );

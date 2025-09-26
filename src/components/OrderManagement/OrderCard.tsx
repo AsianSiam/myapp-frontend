@@ -11,29 +11,29 @@ import { useState } from "react";
  * Configuration des statuts de commande avec couleurs et libellés
  */
 const ORDER_STATUS_CONFIG = {
-    placed: { 
-        label: "Placée", 
+    "en attente": { 
+        label: "En attente", 
         color: "bg-yellow-100 text-yellow-800 border-yellow-200",
-        icon: Package 
-    },
-    paid: { 
-        label: "Payée", 
-        color: "bg-blue-100 text-blue-800 border-blue-200",
-        icon: CreditCard
-    },
-    inProgress: { 
-        label: "En préparation", 
-        color: "bg-orange-100 text-orange-800 border-orange-200",
         icon: Clock
     },
-    outForDelivery: { 
-        label: "En livraison", 
-        color: "bg-purple-100 text-purple-800 border-purple-200",
-        icon: MapPin
-    },
-    delivered: { 
-        label: "Livrée", 
+    payé: { 
+        label: "Payé", 
         color: "bg-green-100 text-green-800 border-green-200",
+        icon: CreditCard
+    },
+    envoyé: { 
+        label: "Envoyé", 
+        color: "bg-blue-100 text-blue-800 border-blue-200",
+        icon: Package
+    },
+    livré: { 
+        label: "Livré", 
+        color: "bg-green-100 text-green-800 border-green-200",
+        icon: Package
+    },
+    annulé: { 
+        label: "Annulé", 
+        color: "bg-red-100 text-red-800 border-red-200",
         icon: Package
     }
 } as const;
@@ -170,11 +170,11 @@ const OrderCard = ({
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="placed">Placée</SelectItem>
-                            <SelectItem value="paid">Payée</SelectItem>
-                            <SelectItem value="inProgress">En préparation</SelectItem>
-                            <SelectItem value="outForDelivery">En livraison</SelectItem>
-                            <SelectItem value="delivered">Livrée</SelectItem>
+                            <SelectItem value="en attente">En attente</SelectItem>
+                            <SelectItem value="payé">Payé</SelectItem>
+                            <SelectItem value="envoyé">Envoyé</SelectItem>
+                            <SelectItem value="livré">Livré</SelectItem>
+                            <SelectItem value="annulé">Annulé</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

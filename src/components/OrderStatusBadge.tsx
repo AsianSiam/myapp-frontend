@@ -4,45 +4,45 @@ import type { OrderStatus } from "@/types";
  * Configuration des statuts de commande avec leurs propriétés d'affichage
  */
 export const ORDER_STATUS_CONFIG = {
-    placed: {
-        label: "Commande passée",
-        color: "text-gray-600",
-        bgColor: "bg-gray-100",
-        borderColor: "border-gray-200",
-        description: "Votre commande a été reçue et est en attente de paiement",
+    "en attente": {
+        label: "En attente",
+        color: "text-yellow-600",
+        bgColor: "bg-yellow-100",
+        borderColor: "border-yellow-200",
+        description: "Commande en attente de paiement",
         progressValue: 10
     },
-    paid: {
-        label: "Payée",
+    payé: {
+        label: "Payé",
+        color: "text-green-600",
+        bgColor: "bg-green-100",
+        borderColor: "border-green-200",
+        description: "Paiement confirmé, commande en traitement",
+        progressValue: 25
+    },
+    envoyé: {
+        label: "Envoyé",
         color: "text-blue-600",
         bgColor: "bg-blue-100",
         borderColor: "border-blue-200",
-        description: "Paiement confirmé, préparation en cours",
-        progressValue: 25
-    },
-    inProgress: {
-        label: "En préparation",
-        color: "text-orange-600",
-        bgColor: "bg-orange-100",
-        borderColor: "border-orange-200",
-        description: "Votre commande est en cours de préparation",
-        progressValue: 50
-    },
-    outForDelivery: {
-        label: "En livraison",
-        color: "text-purple-600",
-        bgColor: "bg-purple-100",
-        borderColor: "border-purple-200",
-        description: "Votre commande est en route",
+        description: "Commande expédiée, en cours de livraison",
         progressValue: 75
     },
-    delivered: {
-        label: "Livrée",
+    livré: {
+        label: "Livré",
         color: "text-green-600",
         bgColor: "bg-green-100",
         borderColor: "border-green-200",
         description: "Commande livrée avec succès",
         progressValue: 100
+    },
+    annulé: {
+        label: "Annulé",
+        color: "text-red-600",
+        bgColor: "bg-red-100",
+        borderColor: "border-red-200",
+        description: "Commande annulée",
+        progressValue: 0
     }
 };
 
@@ -72,7 +72,7 @@ const OrderStatusBadge = ({
     className = "" 
 }: OrderStatusBadgeProps) => {
     
-    const config = ORDER_STATUS_CONFIG[status] || ORDER_STATUS_CONFIG.placed;
+    const config = ORDER_STATUS_CONFIG[status] || ORDER_STATUS_CONFIG["en attente"];
     
     /**
      * Détermine les classes CSS selon la taille
@@ -91,7 +91,7 @@ const OrderStatusBadge = ({
     /**
      * Détermine si le statut indique une commande terminée
      */
-    const isCompleted = status === "delivered";
+    const isCompleted = status === "livré";
 
     return (
         <div className={`inline-flex items-center space-x-2 ${className}`}>
@@ -139,7 +139,7 @@ type OrderProgressBarProps = {
 };
 
 export const OrderProgressBar = ({ status, className = "" }: OrderProgressBarProps) => {
-    const config = ORDER_STATUS_CONFIG[status] || ORDER_STATUS_CONFIG.placed;
+    const config = ORDER_STATUS_CONFIG[status] || ORDER_STATUS_CONFIG["en attente"];
     
     /**
      * Détermine la couleur de la barre de progression

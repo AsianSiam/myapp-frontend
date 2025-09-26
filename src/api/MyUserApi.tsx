@@ -1,27 +1,33 @@
 import { useMutation, useQuery } from 'react-query';
-import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from "sonner"
 import type { User } from "@/types"
+import { useAuth0Token } from "@/hooks/useAuth0Token";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useGetMyUser = () => {
-  const { getAccessTokenSilently } = useAuth0();  
+  const { getTokenSafely } = useAuth0Token();
   
   const getMyUserRequest = async (): Promise<User> => {
-    const accessToken = await getAccessTokenSilently();
+    try {
+      const accessToken = await getTokenSafely();
 
-    const response = await fetch(`${API_BASE_URL}/api/my/user`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": 'application/json',
-        },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch user');
+      const response = await fetch(`${API_BASE_URL}/api/my/user`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": 'application/json',
+          },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user');
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Error getting access token or fetching user:', error);
+      throw error;
     }
-    return response.json();
   };
 
   const { data: currentUser, isLoading, error, refetch } = useQuery("fetchCurrentUser", getMyUserRequest);
@@ -38,21 +44,27 @@ type CreateUserRequest = {
 };
 
 export const useCreateMyUser = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getTokenSafely } = useAuth0Token();
 
   const createMyUserRequest = async (user: CreateUserRequest) => {
-    const accessToken = await getAccessTokenSilently();
+    try {
+      const accessToken = await getTokenSafely();
 
-    const response = await fetch(`${API_BASE_URL}/api/my/user`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": 'application/json',
-        },
-        body: JSON.stringify(user),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to create user');
+      const response = await fetch(`${API_BASE_URL}/api/my/user`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": 'application/json',
+          },
+          body: JSON.stringify(user),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create user');
+      }
+    } catch (error) {
+      console.error('Error getting access token or creating user:', error);
+      throw error;
     }
   };
 
@@ -79,23 +91,29 @@ type updateMyUserRequest = {
 
 
 export const useUpdateMyUser = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getTokenSafely } = useAuth0Token();
 
   const updateMyUserRequest = async (formData: updateMyUserRequest) => {
-    const accessToken = await getAccessTokenSilently();
+    try {
+      const accessToken = await getTokenSafely();
 
-    const response = await fetch(`${API_BASE_URL}/api/my/user`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData),    
-    });
-    if(!response.ok){
-      throw new Error("Failed to update user")
+      const response = await fetch(`${API_BASE_URL}/api/my/user`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData),    
+      });
+      
+      if(!response.ok){
+        throw new Error("Failed to update user")
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Error getting access token or updating user:', error);
+      throw error;
     }
-    return response.json();
   };
 
   const { mutateAsync: updateUser, isLoading, isSuccess, isError, error, reset } = useMutation(updateMyUserRequest);

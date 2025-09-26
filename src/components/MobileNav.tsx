@@ -12,15 +12,15 @@ const MobileNav = () => {
     const { currentUser } = useGetMyUser();
     return (
         <Sheet>
-            <SheetTrigger>
-                <Menu className="text-black hover:text-gray-500" />
+            <SheetTrigger className="text-app-primary hover:text-accent transition-colors p-2 rounded-lg">
+                <Menu className="h-6 w-6" />
             </SheetTrigger>
-            <SheetContent className="bg-white space-y-3">                
+            <SheetContent className="modern-black-card space-y-3">                
                 <Separator />
-                <SheetDescription className="text-sm text-black">
+                <SheetDescription className="text-sm text-app-primary">
                     {isAuthenticated ? (
                         <span className="flex items-center font-bold gap-2">
-                           <CircleUserRound className="text-black h-6 w-6 hover:text-slate-500" />
+                           <CircleUserRound className="text-app-primary h-6 w-6" />
                            {currentUser?.nickname ? currentUser.nickname : user?.email}
                         </span>
                     ) : (
@@ -35,7 +35,7 @@ const MobileNav = () => {
                         <Button 
                         variant="ghost"
                         onClick={() => loginWithRedirect()}
-                        className="flex w-full items-center font-bold bg-slate-400 hover:bg-gray-300">
+                        className="flex w-full items-center font-bold btn-secondary">
                             Connexion
                         </Button>
                     ) : (

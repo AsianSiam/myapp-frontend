@@ -26,11 +26,11 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
     const statistics = useMemo(() => {
         const stats = {
             total: orders.length,
-            placed: orders.filter(o => o.status === "placed").length,
-            paid: orders.filter(o => o.status === "paid").length,
-            inProgress: orders.filter(o => o.status === "inProgress").length,
-            outForDelivery: orders.filter(o => o.status === "outForDelivery").length,
-            delivered: orders.filter(o => o.status === "delivered").length,
+            "en attente": orders.filter(o => o.status === "en attente").length,
+            payé: orders.filter(o => o.status === "payé").length,
+            envoyé: orders.filter(o => o.status === "envoyé").length,
+            livré: orders.filter(o => o.status === "livré").length,
+            annulé: orders.filter(o => o.status === "annulé").length,
             totalRevenue: orders.reduce((sum, order) => sum + order.totalAmount, 0),
         };
         return stats;
@@ -108,30 +108,30 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
             {/* Statistiques rapides */}
             <Card>
                 <CardContent className="p-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         <div className="text-center">
                             <div className="text-2xl font-bold text-blue-600">{statistics.total}</div>
                             <div className="text-xs text-gray-600">Total</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-yellow-600">{statistics.placed}</div>
-                            <div className="text-xs text-gray-600">Placées</div>
+                            <div className="text-2xl font-bold text-yellow-600">{statistics["en attente"]}</div>
+                            <div className="text-xs text-gray-600">En attente</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-blue-600">{statistics.paid}</div>
+                            <div className="text-2xl font-bold text-green-600">{statistics.payé}</div>
                             <div className="text-xs text-gray-600">Payées</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-orange-600">{statistics.inProgress}</div>
-                            <div className="text-xs text-gray-600">Préparation</div>
+                            <div className="text-2xl font-bold text-blue-600">{statistics.envoyé}</div>
+                            <div className="text-xs text-gray-600">Envoyées</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-purple-600">{statistics.outForDelivery}</div>
-                            <div className="text-xs text-gray-600">Livraison</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl font-bold text-green-600">{statistics.delivered}</div>
+                            <div className="text-2xl font-bold text-green-600">{statistics.livré}</div>
                             <div className="text-xs text-gray-600">Livrées</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-2xl font-bold text-red-600">{statistics.annulé}</div>
+                            <div className="text-xs text-gray-600">Annulées</div>
                         </div>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-gray-900">{formatRevenue(statistics.totalRevenue)}</div>
@@ -198,11 +198,11 @@ const OrderFilters = ({ orders, onFilteredOrdersChange, className = "" }: OrderF
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">Tous les statuts</SelectItem>
-                                        <SelectItem value="placed">Placées ({statistics.placed})</SelectItem>
-                                        <SelectItem value="paid">Payées ({statistics.paid})</SelectItem>
-                                        <SelectItem value="inProgress">En préparation ({statistics.inProgress})</SelectItem>
-                                        <SelectItem value="outForDelivery">En livraison ({statistics.outForDelivery})</SelectItem>
-                                        <SelectItem value="delivered">Livrées ({statistics.delivered})</SelectItem>
+                                        <SelectItem value="en attente">En attente ({statistics["en attente"]})</SelectItem>
+                                        <SelectItem value="payé">Payées ({statistics.payé})</SelectItem>
+                                        <SelectItem value="envoyé">Envoyées ({statistics.envoyé})</SelectItem>
+                                        <SelectItem value="livré">Livrées ({statistics.livré})</SelectItem>
+                                        <SelectItem value="annulé">Annulées ({statistics.annulé})</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

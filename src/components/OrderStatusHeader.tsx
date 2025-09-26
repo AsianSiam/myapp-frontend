@@ -53,7 +53,7 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
     /**
      * Détermine si la commande est livrée
      */
-    const isDelivered = order.status === "delivered";
+    const isDelivered = order.status === "livré";
 
     return (
         <div className="space-y-6">
@@ -117,7 +117,18 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
             )}
 
             {/* Messages spéciaux selon le statut */}
-            {order.status === "paid" && (
+            {order.status === "en attente" && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div className="flex items-center">
+                        <span className="text-yellow-600 mr-2">⏳</span>
+                        <span className="text-yellow-800 font-medium">
+                            Commande reçue ! En attente de confirmation de paiement.
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {order.status === "payé" && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center">
                         <span className="text-green-600 mr-2">✅</span>
@@ -128,7 +139,7 @@ const OrderStatusHeader = ({ order, showProgressBar = true }: Props) => {
                 </div>
             )}
 
-            {order.status === "delivered" && (
+            {order.status === "livré" && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center">
                         <span className="text-green-600 mr-2">🎉</span>

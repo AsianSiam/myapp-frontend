@@ -30,14 +30,18 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     });
 
     useEffect(() => {
+        console.log('Theme changed to:', theme); // Debug
+        
         // ✅ Sauvegarder le thème dans localStorage
         localStorage.setItem('theme', theme);
         
         // ✅ Ajouter/retirer la classe 'dark' sur le document
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
+            console.log('Added dark class to html element'); // Debug
         } else {
             document.documentElement.classList.remove('dark');
+            console.log('Removed dark class from html element'); // Debug
         }
     }, [theme]);
 

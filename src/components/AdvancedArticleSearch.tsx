@@ -112,7 +112,7 @@ const AdvancedArticleSearch = ({
             />
 
             {/* Filtre de catégories */}
-            <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
+            <div className="dropdown-menu rounded-lg border p-4">
                 <CategoryFilter 
                     onChange={handleCategoryChange}
                     selectedCategories={searchState.selectedCategories}
@@ -138,8 +138,8 @@ const AdvancedArticleSearch = ({
 
             {isLoading && (
                 <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p>Chargement des articles...</p>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mx-auto mb-4"></div>
+                    <p className="text-app-primary">Chargement des articles...</p>
                 </div>
             )}
         </div>

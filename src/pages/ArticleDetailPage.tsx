@@ -1,141 +1,284 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Plus, Minus, ArrowLeft, ShoppingCart, Star, MessageCircle, Send, CreditCard, User } from "lucide-react";
 import * as ArticleShopApi from "@/api/ArticleShopApi";
 import * as ReviewApi from "@/api/ReviewApi";
-import { useCreateArticleCheckoutSession } from "@/api/ArticleCheckoutApi";
-import { useGetMyUser } from "@/api/MyUserApi";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useAuth0 } from "@auth0/auth0-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import UserProfileForm from "@/forms/user-profile-form/UserProfileForm";
-import type { UserFormData } from "@/forms/user-profile-form/UserProfileForm";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Star, ShoppingCart, ArrowLeft, Plus, Minus, ChevronLeft, ChevronRight, Package, FileText, CreditCard } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useAuth0 } from "@auth0/auth0-react";
+import type { Review } from "@/api/ReviewApi";
+import ArticleCheckoutButton from "@/components/ArticleCheckoutButton";
 
-const StarRating = ({ rating, reviewCount }: { rating: number, reviewCount: number }) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
+// Composants utilitaires pour éviter la répétition
+const ArticleLoadingSkeleton = () => (
+    <div className="app-container p-6">
+        <div className="animate-pulse space-y-8">
+            <div className="h-6 bg-app-muted rounded w-24"></div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="aspect-square bg-app-muted rounded-2xl"></div>
+                <div className="space-y-6">
+                    <div className="h-8 bg-app-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-app-muted rounded w-full"></div>
+                    <div className="h-6 bg-app-muted rounded w-1/3"></div>
+                    <div className="h-12 bg-app-muted rounded"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+);
 
-    for (let i = 0; i < 5; i++) {
-        if (i < fullStars) {
-            stars.push(
-                <span key={i} className="text-yellow-400 text-xl">★</span>
-            );
-        } else if (i === fullStars && hasHalfStar) {
-            stars.push(
-                <span key={i} className="text-yellow-400 text-xl">☆</span>
-            );
-        } else {
-            stars.push(
-                <span key={i} className="text-gray-300 text-xl">★</span>
-            );
-        }
+const ArticleNotFound = ({ onBackClick }: { onBackClick: () => void }) => (
+    <div className="app-container p-6 text-center">
+        <div className="py-20">
+            <h1 className="text-3xl font-bold text-app-primary mb-4">Article non trouvé</h1>
+            <p className="text-app-secondary mb-8">L'article que vous recherchez n'existe pas ou a été supprimé.</p>
+            <Button onClick={onBackClick} size="lg" className="rounded-full">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Retour à la boutique
+            </Button>
+        </div>
+    </div>
+);
+
+// Composant carrousel d'images
+const ImageCarousel = ({ images, name }: { images: string[], name: string }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    
+    // Pour l'instant, on utilise une seule image répétée, mais la structure est prête pour plusieurs images
+    const imageList = images && images.length > 0 ? images : [images[0], images[0], images[0]];
+
+    const nextImage = () => {
+        setCurrentIndex((prev) => (prev + 1) % imageList.length);
+    };
+
+    const prevImage = () => {
+        setCurrentIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
+    };
+
+    return (
+        <div className="relative group">
+            <div className="aspect-square rounded-2xl overflow-hidden bg-app-muted">
+                <img 
+                    src={imageList[currentIndex]} 
+                    alt={`${name} - Image ${currentIndex + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+            </div>
+            
+            {imageList.length > 1 && (
+                <>
+                    <button
+                        onClick={prevImage}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white dark:bg-black/80 dark:hover:bg-black rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center"
+                    >
+                        <ChevronLeft className="h-5 w-5 text-gray-700 dark:text-white" />
+                    </button>
+                    <button
+                        onClick={nextImage}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white dark:bg-black/80 dark:hover:bg-black rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center"
+                    >
+                        <ChevronRight className="h-5 w-5 text-gray-700 dark:text-white" />
+                    </button>
+                    
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                        {imageList.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setCurrentIndex(index)}
+                                className={`w-2 h-2 rounded-full transition-colors ${
+                                    index === currentIndex ? 'bg-white' : 'bg-white/50'
+                                }`}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
+// Composant bouton de quantité (style panier) avec gestion stock et checkout
+const QuantityButton = ({ currentQuantity, maxStock, onQuantityChange }: {
+    currentQuantity: number;
+    maxStock: number;
+    onQuantityChange: (quantity: number) => void;
+}) => {
+    // Article en rupture de stock
+    if (maxStock === 0) {
+        return (
+            <div className="space-y-3">
+                <Button 
+                    disabled
+                    size="lg"
+                    className="w-full rounded-full bg-gray-400 text-white font-semibold py-3 cursor-not-allowed"
+                >
+                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    Rupture de stock
+                </Button>
+                <p className="text-center text-sm text-red-600 font-medium">
+                    Cet article n'est actuellement pas disponible
+                </p>
+            </div>
+        );
     }
 
+    // Article pas encore dans le panier
+    if (currentQuantity === 0) {
+        return (
+            <Button 
+                onClick={() => onQuantityChange(1)}
+                size="lg"
+                className="w-full rounded-full search-button font-semibold py-3 shadow-lg hover:shadow-xl transition-all duration-200"
+            >
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Ajouter au panier
+            </Button>
+        );
+    }
+
+    // Article déjà dans le panier
     return (
-        <div className="flex items-center gap-2">
-            <div className="flex">
-                {stars}
+            <div className="space-y-4">
+            {/* Contrôles de quantité */}
+            <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 bg-app-muted rounded-full p-1 shadow-inner">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onQuantityChange(Math.max(0, currentQuantity - 1))}
+                        className="h-10 w-10 p-0 hover:bg-app-background rounded-full shadow-sm"
+                    >
+                        <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-12 text-center font-bold text-lg text-app-primary">
+                        {currentQuantity}
+                    </span>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onQuantityChange(Math.min(maxStock, currentQuantity + 1))}
+                        disabled={currentQuantity >= maxStock}
+                        className="h-10 w-10 p-0 hover:bg-app-background rounded-full shadow-sm disabled:opacity-50"
+                    >
+                        <Plus className="h-4 w-4" />
+                    </Button>
+                </div>                {/* Bouton Procéder au paiement aligné avec les contrôles */}
+                <div className="flex-1">
+                    <ArticleCheckoutButton>
+                        <Button 
+                            className="h-12 w-full bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+                        >
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            Procéder au paiement
+                        </Button>
+                    </ArticleCheckoutButton>
+                </div>
             </div>
-            <span className="text-lg text-gray-600">
-                {rating.toFixed(1)} ({reviewCount} avis)
-            </span>
+
+            <div className="text-center">
+                <span className="text-sm text-app-secondary">
+                    {currentQuantity} article{currentQuantity > 1 ? 's' : ''} dans le panier
+                </span>
+            </div>
         </div>
     );
 };
 
-const InteractiveStarRating = ({ rating, onRatingChange }: { rating: number, onRatingChange: (rating: number) => void }) => {
-    const [hoverRating, setHoverRating] = useState(0);
+// Composant pour les étoiles réutilisable
+const StarRating = ({ 
+    rating, 
+    interactive = false, 
+    onRate 
+}: { 
+    rating: number; 
+    interactive?: boolean; 
+    onRate?: (rating: number) => void; 
+}) => (
+    <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+                key={star}
+                className={`h-5 w-5 ${
+                    star <= rating 
+                        ? "text-yellow-400 fill-yellow-400" 
+                        : "text-app-muted-foreground"
+                } ${interactive ? "cursor-pointer hover:text-yellow-400" : ""}`}
+                onClick={() => interactive && onRate?.(star)}
+            />
+        ))}
+    </div>
+);
 
-    return (
-        <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                    key={star}
-                    type="button"
-                    className="text-2xl transition-colors hover:scale-110"
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    onClick={() => onRatingChange(star)}
-                >
-                    <Star 
-                        className={`h-6 w-6 ${
-                            star <= (hoverRating || rating)
-                                ? "text-yellow-400 fill-current" 
-                                : "text-gray-300"
-                        }`}
-                    />
-                </button>
-            ))}
-        </div>
-    );
-};
-
-const ReviewSection = ({ articleId }: { articleId: string }) => {
-    const { isAuthenticated } = useAuth0();
+export default function ArticleDetailPage() {
+    const { id: articleId } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const { addToCart, cartItems, updateQuantity, removeFromCart } = useCart();
+    const { isAuthenticated, loginWithRedirect } = useAuth0();
+    
     const [userRating, setUserRating] = useState(0);
     const [userComment, setUserComment] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const queryClient = useQueryClient();
-    
-    // Récupérer les avis existants
-    const { data: reviews = [] } = useQuery(
-        ["articleReviews", articleId],
-        () => ReviewApi.getArticleReviews(articleId)
-    );
+    const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
-    // Vérifier si l'utilisateur a acheté le produit
-    const { data: purchaseData } = useQuery(
-        ["checkPurchase", articleId],
-        () => ReviewApi.checkUserPurchase(articleId),
-        { enabled: isAuthenticated }
-    );
+    // Queries - Seulement si on a un articleId valide
+    const { articleShop: article, isLoading: articleLoading } = ArticleShopApi.useGetArticleShop(articleId || "");
+    const { reviews, isLoading: reviewsLoading } = ReviewApi.useGetArticleReviews(articleId || "");
+    const { purchaseData, isLoading: checkingPurchase } = ReviewApi.useCheckUserPurchase(articleId || "");
+    const { addReview } = ReviewApi.useAddReview();
 
-    const hasPurchased = purchaseData?.hasPurchased || false;
+    // Trouver la quantité actuelle dans le panier
+    const currentCartItem = cartItems.find(item => item.article._id === articleId);
+    const currentQuantity = currentCartItem?.quantity || 0;
 
-    // Mutation pour ajouter un avis
-    const addReviewMutation = useMutation(
-        (reviewData: ReviewApi.AddReviewRequest) => ReviewApi.addReview(articleId, reviewData),
-        {
-            onSuccess: () => {
-                toast.success("Votre avis a été ajouté avec succès !");
-                setUserRating(0);
-                setUserComment("");
-                // Recharger les avis et les données de l'article
-                queryClient.invalidateQueries(["articleReviews", articleId]);
-                queryClient.invalidateQueries(["fetchArticleShop", articleId]);
-            },
-            onError: (error: Error) => {
-                toast.error(error.message || "Erreur lors de l'ajout de votre avis");
+    const canReview = isAuthenticated && (purchaseData?.hasPurchased || false);
+
+    // Pas d'articleId dans l'URL
+    if (!articleId) {
+        return (
+            <div className="app-container p-6 text-center">
+                <div className="py-20">
+                    <h1 className="text-3xl font-bold text-app-primary mb-4">URL invalide</h1>
+                    <Button onClick={() => navigate("/shop")} size="lg" className="rounded-full">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Retour à la boutique
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    // Loading state
+    if (articleLoading) {
+        return <ArticleLoadingSkeleton />;
+    }
+
+    // Article not found
+    if (!article) {
+        return <ArticleNotFound onBackClick={() => navigate("/shop")} />;
+    }
+
+    const handleQuantityChange = (newQuantity: number) => {
+        if (newQuantity === 0) {
+            if (currentQuantity > 0) {
+                removeFromCart(articleId);
+                toast.success("Article retiré du panier");
             }
+        } else if (currentQuantity === 0) {
+            addToCart(article, newQuantity);
+            toast.success(`${article.name} ajouté au panier`);
+        } else {
+            updateQuantity(articleId, newQuantity);
         }
-    );
+    };
 
     const handleSubmitReview = async () => {
         if (!isAuthenticated) {
-            toast.error("Vous devez être connecté pour laisser un avis");
-            return;
-        }
-
-        if (!hasPurchased) {
-            toast.error("Vous devez avoir acheté ce produit pour laisser un avis");
+            loginWithRedirect();
             return;
         }
 
@@ -145,546 +288,365 @@ const ReviewSection = ({ articleId }: { articleId: string }) => {
         }
 
         if (userComment.trim().length < 10) {
-            toast.error("Le commentaire doit contenir au moins 10 caractères");
+            toast.error("Votre commentaire doit contenir au moins 10 caractères");
             return;
         }
 
-        setIsSubmitting(true);
+        setIsSubmittingReview(true);
         try {
-            await addReviewMutation.mutateAsync({
-                rating: userRating,
-                comment: userComment.trim()
-            });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="space-y-6">
-            {/* Formulaire d'avis */}
-            {isAuthenticated ? (
-                hasPurchased ? (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                        <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-                            <MessageCircle className="mr-2 h-4 w-4" />
-                            Laisser un avis
-                        </h4>
-                        
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Votre note
-                                </label>
-                                <InteractiveStarRating 
-                                    rating={userRating} 
-                                    onRatingChange={setUserRating}
-                                />
-                            </div>
-                            
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Votre commentaire
-                                </label>
-                                <Textarea
-                                    value={userComment}
-                                    onChange={(e) => setUserComment(e.target.value)}
-                                    placeholder="Partagez votre expérience avec ce produit..."
-                                    rows={4}
-                                    className="w-full"
-                                />
-                            </div>
-                            
-                            <Button 
-                                onClick={handleSubmitReview}
-                                disabled={isSubmitting || userRating === 0}
-                                className="bg-blue-600 hover:bg-blue-700"
-                            >
-                                <Send className="mr-2 h-4 w-4" />
-                                {isSubmitting ? "Envoi..." : "Publier l'avis"}
-                            </Button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                        <p className="text-orange-800 text-sm">
-                            Vous devez avoir acheté ce produit pour pouvoir laisser un avis.
-                        </p>
-                    </div>
-                )
-            ) : (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-blue-800 text-sm">
-                        Connectez-vous pour laisser un avis sur ce produit.
-                    </p>
-                </div>
-            )}
-
-            {/* Liste des avis */}
-            <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">Avis clients ({reviews.length})</h4>
-                
-                {reviews.length > 0 ? (
-                    reviews.map((review) => (
-                        <div key={review._id} className="border border-gray-200 rounded-lg p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-medium text-gray-900">{review.userName}</span>
-                                    {review.verified && (
-                                        <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
-                                            Achat vérifié
-                                        </span>
-                                    )}
-                                </div>
-                                <span className="text-sm text-gray-500">
-                                    {new Date(review.createdAt).toLocaleDateString('fr-FR')}
-                                </span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2 mb-2">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <Star
-                                        key={star}
-                                        className={`h-4 w-4 ${
-                                            star <= review.rating
-                                                ? "text-yellow-400 fill-current"
-                                                : "text-gray-300"
-                                        }`}
-                                    />
-                                ))}
-                                <span className="text-sm text-gray-600">({review.rating}/5)</span>
-                            </div>
-                            
-                            <p className="text-gray-700">{review.comment}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-gray-500 text-center py-8">
-                        Aucun avis pour le moment. Soyez le premier à laisser un commentaire !
-                    </p>
-                )}
-            </div>
-        </div>
-    );
-};
-
-const ImageCarousel = ({ images, altText }: { images: string[], altText: string }) => {
-    // Si une seule image, affichage simple
-    if (images.length <= 1) {
-        return (
-            <img
-                src={images[0] || "/placeholder-image.jpg"}
-                alt={altText}
-                className="w-full h-[500px] object-cover rounded-lg shadow-lg"
-            />
-        );
-    }
-
-    // Carousel pour plusieurs images
-    return (
-        <Carousel className="w-full">
-            <CarouselContent>
-                {images.map((image, index) => (
-                    <CarouselItem key={index}>
-                        <div className="relative">
-                            <img
-                                src={image}
-                                alt={`${altText} - Image ${index + 1}`}
-                                className="w-full h-[500px] object-cover rounded-lg shadow-lg"
-                            />
-                            <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm">
-                                {index + 1} / {images.length}
-                            </div>
-                        </div>
-                    </CarouselItem>
-                ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
-        </Carousel>
-    );
-};
-
-const ArticleDetailPage = () => {
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
-    const { addToCart, cartItems, updateQuantity, removeFromCart } = useCart();
-    const [isAdding, setIsAdding] = useState(false);
-    const [isCheckoutDialogOpen, setIsCheckoutDialogOpen] = useState(false);
-    const { isAuthenticated, loginWithRedirect, user } = useAuth0();
-    const { createArticleCheckoutSession, isLoading: isCheckoutLoading } = useCreateArticleCheckoutSession();
-    const { currentUser, isLoading: isGetUserLoading } = useGetMyUser();
-
-    const { articleShop, isLoading } = ArticleShopApi.useGetArticleShop(id || "");
-
-    // Trouver la quantité actuelle de cet article dans le panier
-    const currentCartItem = cartItems.find(item => item.article._id === id);
-    const currentQuantity = currentCartItem?.quantity || 0;
-
-    const handleAddToCart = async () => {
-        if (!articleShop || articleShop.stock <= 0) {
-            toast.error("Cet article n'est plus en stock");
-            return;
-        }
-
-        setIsAdding(true);
-        try {
-            addToCart(articleShop, 1);
-            toast.success(`${articleShop.name} ajouté au panier`);
-        } catch (error) {
-            toast.error("Erreur lors de l'ajout au panier");
-        } finally {
-            setIsAdding(false);
-        }
-    };
-
-    const handleIncrement = () => {
-        if (!articleShop || currentQuantity >= articleShop.stock) {
-            toast.error("Stock insuffisant");
-            return;
-        }
-        
-        if (currentQuantity === 0) {
-            handleAddToCart();
-        } else {
-            updateQuantity(articleShop._id, currentQuantity + 1);
-        }
-    };
-
-    const handleDecrement = () => {
-        if (!articleShop) return;
-        
-        if (currentQuantity > 1) {
-            updateQuantity(articleShop._id, currentQuantity - 1);
-        } else if (currentQuantity === 1) {
-            removeFromCart(articleShop._id);
-        }
-    };
-
-    const handleCheckout = () => {
-        if (!articleShop || currentQuantity === 0) {
-            toast.error("Aucun article sélectionné pour le paiement");
-            return;
-        }
-
-        if (!isAuthenticated) {
-            toast.info("Connexion requise pour procéder au paiement");
-            loginWithRedirect();
-            return;
-        }
-        
-        // Ouvrir le dialog de checkout
-        setIsCheckoutDialogOpen(true);
-    };
-
-    const onDirectCheckout = async (userFormData: UserFormData) => {
-        if (!articleShop || currentQuantity === 0) {
-            toast.error("Aucun article sélectionné");
-            return;
-        }
-
-        try {
-            const checkoutData = {
-                cartItems: [{
-                    articleId: articleShop._id,
-                    name: articleShop.name,
-                    quantity: currentQuantity,
-                    price: articleShop.price,
-                }],
-                deliveryDetails: {
-                    email: userFormData.email as string,
-                    name: userFormData.name,
-                    addressLine1: userFormData.addressLine1,
-                    city: userFormData.city,
-                    zipCode: userFormData.zipCode.toString(),
-                    state: userFormData.state,
-                    country: userFormData.country,
-                },
-            };
-
-            toast.loading("Préparation du paiement...", { id: "direct-checkout" });
-            const data = await createArticleCheckoutSession(checkoutData);
-            
-            // Rediriger vers Stripe Checkout
-            if (data.url) {
-                toast.success("Redirection vers le paiement", { id: "direct-checkout" });
-                // Retirer l'article du panier local puisqu'on va le payer directement
-                if (currentCartItem) {
-                    removeFromCart(articleShop._id);
+            await addReview({
+                articleId: articleId!,
+                reviewData: {
+                    rating: userRating,
+                    comment: userComment.trim()
                 }
-                // Fermer le dialog
-                setIsCheckoutDialogOpen(false);
-                // Redirection vers Stripe
-                window.location.href = data.url;
-            } else {
-                toast.error("Erreur lors de la création de la session de paiement", { id: "direct-checkout" });
-            }
-        } catch (error) {
-            console.error("Erreur checkout direct:", error);
-            toast.error("Erreur lors du processus de paiement", { id: "direct-checkout" });
+            });
+            
+            toast.success("Votre avis a été publié avec succès!");
+            setUserRating(0);
+            setUserComment("");
+        } catch (error: any) {
+            toast.error(error.message || "Erreur lors de la publication de l'avis");
+        } finally {
+            setIsSubmittingReview(false);
         }
     };
 
-    if (isLoading) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
-    }
+    const averageRating = reviews.length > 0 
+        ? reviews.reduce((sum: number, review: Review) => sum + review.rating, 0) / reviews.length
+        : 0;
 
-    if (!articleShop) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4">Article non trouvé</h1>
-                    <p className="text-gray-600 mb-6">L'article que vous recherchez n'existe pas ou a été supprimé.</p>
-                    <Button onClick={() => navigate("/shop")} className="bg-blue-600 hover:bg-blue-700">
+    return (
+        <div className="min-h-screen modern-black-bg">
+            {/* Bouton retour fixe */}
+            <div className="sticky top-0 z-10 bg-app-background/80 backdrop-blur-sm border-b border-app">
+                <div className="app-container p-6">
+                    <Button 
+                        variant="ghost" 
+                        onClick={() => navigate(-1)}
+                        className="rounded-full hover:bg-app-muted"
+                    >
                         <ArrowLeft className="mr-2 h-4 w-4" />
-                        Retour à la boutique
+                        Retour
                     </Button>
                 </div>
             </div>
-        );
-    }
 
-    return (
-        <div className="container mx-auto px-4 py-8">
-            {/* Bouton retour */}
-            <Button
-                variant="ghost"
-                onClick={() => navigate(-1)}
-                className="mb-6 text-gray-600 hover:text-gray-900"
-            >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Retour
-            </Button>
-
-            <div className="grid lg:grid-cols-2 gap-12">
-                {/* Images avec Carousel */}
-                <div className="space-y-4">
-                    <ImageCarousel 
-                        images={articleShop.images && articleShop.images.length > 0 ? articleShop.images : [articleShop.imageUrl]} 
-                        altText={articleShop.name} 
-                    />
-                </div>
-
-                {/* Détails */}
-                <div className="space-y-6">
-                    <div>
-                        <span className="px-3 py-1 text-sm bg-green-100 text-green-800 rounded-full font-medium">
-                            {articleShop.category}
-                        </span>
-                    </div>
-                    
-                    <h1 className="text-4xl font-bold text-gray-900">
-                        {articleShop.name}
-                    </h1>
-
-                    <StarRating 
-                        rating={articleShop.rating || 0} 
-                        reviewCount={articleShop.reviewCount || 0} 
-                    />
-
-                    <p className="text-lg text-gray-700 leading-relaxed">
-                        {articleShop.description}
-                    </p>
-
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-3xl font-bold text-gray-900">
-                                CHF {(articleShop.price / 100).toFixed(2)}
-                            </span>
-                            <div className="text-right">
-                                <div className="text-sm text-gray-500">
-                                    {articleShop.stock > 0 
-                                        ? `${articleShop.stock} articles en stock` 
-                                        : 'Rupture de stock'
-                                    }
-                                </div>
-                                <div className="text-xs text-gray-400 mt-1">
-                                    Dernière mise à jour: {new Date(articleShop.lastUpdate).toLocaleDateString('fr-FR')}
-                                </div>
-                            </div>
+            <div className="app-container p-6 space-y-8">
+                {/* SECTION 1: Fiche produit principale */}
+                <div className="modern-black-card rounded-3xl overflow-hidden border-0">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+                        {/* Carrousel d'images */}
+                        <div>
+                            <ImageCarousel 
+                                images={article.images || [article.imageUrl]} 
+                                name={article.name} 
+                            />
                         </div>
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                {articleShop.stock <= 0 ? (
-                                    <div className="flex-1 bg-gray-200 text-gray-500 px-6 py-3 rounded-lg text-center font-medium">
-                                        <ShoppingCart className="inline mr-2 h-4 w-4" />
-                                        Article épuisé
-                                    </div>
-                                ) : currentQuantity === 0 ? (
-                                    <button 
-                                        onClick={handleIncrement}
-                                        disabled={isAdding}
-                                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center"
-                                    >
-                                        <ShoppingCart className="mr-2 h-4 w-4" />
-                                        {isAdding ? 'Ajout en cours...' : 'Ajouter au panier'}
-                                    </button>
-                                ) : (
-                                    <>
-                                        <div className="flex items-center gap-3 bg-white border-2 border-gray-200 rounded-lg p-2">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={handleDecrement}
-                                                className="h-10 w-10 p-0 hover:bg-gray-100"
-                                            >
-                                                <Minus className="h-4 w-4" />
-                                            </Button>
-                                            <div className="text-center min-w-[3rem]">
-                                                <div className="font-bold text-xl text-gray-800">{currentQuantity}</div>                                            
-                                            </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={handleIncrement}
-                                                disabled={currentQuantity >= articleShop.stock}
-                                                className="h-10 w-10 p-0 hover:bg-gray-100 disabled:opacity-50"
-                                            >
-                                                <Plus className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className="text-sm text-gray-600">
-                                            <div className="font-medium">Total: CHF {((articleShop.price * currentQuantity) / 100).toFixed(2)}</div>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                            
-                            {/* Bouton de paiement aligné avec la fin de "stock" */}
-                            {currentQuantity > 0 && (
-                                <Button 
-                                    onClick={handleCheckout}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white h-[52px] w-[140px] flex items-center justify-center gap-2"
-                                >
-                                    <CreditCard className="h-4 w-4" />
-                                    <span className="text-sm">Payer</span>
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Sections Accordion */}
-            <div className="mt-12">
-                <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="description">
-                        <AccordionTrigger className="text-xl font-semibold">
-                            Description détaillée
-                        </AccordionTrigger>
-                        <AccordionContent>
-                            <div className="prose prose-gray max-w-none">
-                                <p className="text-gray-700 leading-relaxed mb-4">
-                                    {articleShop.description}
-                                </p>
-                                <div className="bg-gray-50 p-4 rounded-lg mt-6">
-                                    <h4 className="font-semibold text-gray-900 mb-2">Caractéristiques:</h4>
-                                    <ul className="space-y-1 text-gray-700">
-                                        <li>• <strong>Numéro d'article:</strong> <code className="bg-gray-200 px-2 py-1 rounded text-xs font-mono">{articleShop._id}</code></li>
-                                        <li>• Catégorie: {articleShop.category}</li>
-                                        <li>• Prix: CHF {(articleShop.price / 100).toFixed(2)}</li>
-                                        <li>• Stock disponible: {articleShop.stock} unités</li>
-                                        <li>• Note moyenne: {(articleShop.rating || 0).toFixed(1)}/5 ({articleShop.reviewCount || 0} avis)</li>
-                                        <li>• Dernière mise à jour: {new Date(articleShop.lastUpdate).toLocaleDateString('fr-FR')}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                    
-                    <AccordionItem value="reviews">
-                        <AccordionTrigger className="text-xl font-semibold">
-                            Avis et commentaires
-                        </AccordionTrigger>
-                        <AccordionContent>
-                            <ReviewSection articleId={articleShop._id} />
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-            </div>
-
-            {/* Dialog de paiement direct */}
-            <Dialog open={isCheckoutDialogOpen} onOpenChange={setIsCheckoutDialogOpen}>
-                <DialogContent className="max-w-[500px] md:max-w-[700px] bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-                    <DialogHeader>
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-100 rounded-full">
-                                <CreditCard className="h-6 w-6 text-blue-600" />
-                            </div>
+                        {/* Informations produit */}
+                        <div className="space-y-6">
+                            {/* Titre et catégorie */}
                             <div>
-                                <DialogTitle className="text-2xl text-blue-800">Paiement direct</DialogTitle>
-                                <DialogDescription className="text-blue-700">
-                                    Vérifiez vos informations de livraison avant de procéder au paiement sécurisé
-                                </DialogDescription>
-                            </div>
-                        </div>
-                    </DialogHeader>
-                    
-                    <div className="space-y-4">
-                        {/* Informations utilisateur */}
-                        {user && (
-                            <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 flex items-start gap-3">
-                                <User className="h-4 w-4 text-blue-600 mt-0.5" />
-                                <p className="text-blue-700 text-sm">
-                                    Connecté en tant que <strong>{user?.name || user?.email}</strong>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Badge variant="secondary" className="rounded-full px-3 py-1">
+                                        {article.category}
+                                    </Badge>
+                                    {article.stock <= 5 && article.stock > 0 && (
+                                        <Badge variant="outline" className="rounded-full px-3 py-1 text-orange-600 border-orange-300">
+                                            Plus que {article.stock} en stock
+                                        </Badge>
+                                    )}
+                                </div>
+                                <h1 className="text-3xl lg:text-4xl font-bold text-app-primary mb-3">
+                                    {article.name}
+                                </h1>
+                                <p className="text-lg text-app-secondary leading-relaxed">
+                                    {article.description?.substring(0, 150)}...
                                 </p>
                             </div>
-                        )}
 
-                        {/* Récapitulatif article */}
-                        {articleShop && (
-                            <div className="bg-white/70 rounded-lg p-4 border border-blue-200">
-                                <h4 className="font-semibold text-gray-800 mb-2">Récapitulatif de votre commande</h4>
-                                <div className="flex items-center gap-3 mb-3">
-                                    <img 
-                                        src={articleShop.imageUrl} 
-                                        alt={articleShop.name}
-                                        className="w-12 h-12 object-cover rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <h5 className="font-medium text-sm">{articleShop.name}</h5>
-                                        <p className="text-gray-600 text-xs">{articleShop.category}</p>
+                            {/* Note moyenne */}
+                            {reviews.length > 0 && (
+                                <div className="flex items-center gap-3 p-4 bg-yellow-50 dark:bg-transparent rounded-xl">
+                                    <StarRating rating={Math.round(averageRating)} />
+                                    <div>
+                                        <div className="font-semibold text-app-primary">
+                                            {averageRating.toFixed(1)} / 5
+                                        </div>
+                                        <div className="text-sm text-app-secondary">
+                                            {reviews.length} avis client{reviews.length > 1 ? 's' : ''}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="space-y-1 text-sm">
-                                    <div className="flex justify-between">
-                                        <span>{currentQuantity}x {articleShop.name}</span>
-                                        <span className="font-medium">CHF {((articleShop.price * currentQuantity) / 100).toFixed(2)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-gray-500">
-                                        <span>Frais de livraison</span>
-                                        <span>CHF 5.00</span>
-                                    </div>
-                                    <div className="border-t pt-2 flex justify-between font-bold">
-                                        <span>Total</span>
-                                        <span className="text-blue-600">CHF {((articleShop.price * currentQuantity + 500) / 100).toFixed(2)}</span>
-                                    </div>
+                            )}
+
+                            {/* Prix */}
+                            <div className="p-6">
+                                <div className="text-4xl font-bold text-app-primary mb-2">
+                                    {article.price.toFixed(2)}
+                                </div>
+                                <div className="text-sm-semibold text-app-secondary">
+                                    Prix unitaire • Livraison gratuite
                                 </div>
                             </div>
-                        )}
 
-                        {/* Formulaire */}
-                        {currentUser && (
-                            <div className="bg-white/70 rounded-lg p-1">
-                                <UserProfileForm 
-                                    currentUser={currentUser} 
-                                    onSave={onDirectCheckout} 
-                                    isLoading={isGetUserLoading || isCheckoutLoading} 
-                                    buttonText={isCheckoutLoading ? "Redirection..." : "Procéder au paiement sécurisé"} 
-                                    title=""
+                            {/* Bouton panier */}
+                            <div className="pt-4">
+                                <QuantityButton
+                                    currentQuantity={currentQuantity}
+                                    maxStock={article.stock}
+                                    onQuantityChange={handleQuantityChange}
                                 />
                             </div>
-                        )}
+                        </div>
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+
+                {/* SECTIONS 2 & 3: Accordéons */}
+                <div className="space-y-4">
+                    <Accordion type="multiple" className="space-y-4">
+                        {/* SECTION 2: Informations détaillées */}
+                        <AccordionItem value="details" className="modern-black-card rounded-2xl overflow-hidden border-0">
+                            <AccordionTrigger className="px-8 py-6 hover:bg-app-muted hover:no-underline">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-full">
+                                        <Package className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                                    </div>
+                                    <div className="text-left">
+                                        <h2 className="text-xl font-bold text-app-primary">
+                                            Informations détaillées
+                                        </h2>
+                                        <p className="text-app-secondary">
+                                            Description complète et caractéristiques du produit
+                                        </p>
+                                    </div>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="px-8 pb-8">
+                                <div className="space-y-6">
+                                    {/* Description complète */}
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-app-primary mb-3">Description</h3>
+                                        <p className="text-app-secondary leading-relaxed">
+                                            {article.description}
+                                        </p>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Caractéristiques */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-3">
+                                            <h3 className="text-lg font-semibold text-app-primary">Caractéristiques</h3>
+                                            <div className="space-y-2">
+                                                <div className="flex justify-between py-2 border-b border-app">
+                                                    <span className="text-app-secondary">Référence</span>
+                                                    <span className="font-medium text-app-primary font-mono text-sm">{articleId}</span>
+                                                </div>
+                                                <div className="flex justify-between py-2 border-b border-app">
+                                                    <span className="text-app-secondary">Catégorie</span>
+                                                    <span className="font-medium text-app-primary">{article.category}</span>
+                                                </div>
+                                                <div className="flex justify-between py-2 border-b border-app">
+                                                    <span className="text-app-secondary">Stock disponible</span>
+                                                    <span className="font-medium text-app-primary">{article.stock} unités</span>
+                                                </div>
+                                                <div className="flex justify-between py-2">
+                                                    <span className="text-app-secondary">Prix unitaire</span>
+                                                    <span className="font-medium text-blue-600 dark:text-blue-400">{article.price.toFixed(2)} €</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <h3 className="text-lg font-semibold text-app-primary">Livraison & Retours</h3>
+                                            <div className="space-y-3">
+                                                <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                                    <div>
+                                                        <div className="font-medium text-green-800 dark:text-green-400">Livraison gratuite</div>
+                                                        <div className="text-sm text-green-700 dark:text-green-300">Expédition sous 24-48h</div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                                    <div>
+                                                        <div className="font-medium text-blue-800 dark:text-blue-400">Retours gratuits</div>
+                                                        <div className="text-sm text-blue-700 dark:text-blue-300">30 jours pour changer d'avis</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+
+                        {/* SECTION 3: Avis clients */}
+                        <AccordionItem value="reviews" className="modern-black-card rounded-2xl overflow-hidden border-0">
+                            <AccordionTrigger className="px-8 py-6 hover:bg-app-muted hover:no-underline">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-yellow-100 dark:bg-yellow-900/20 rounded-full">
+                                        <FileText className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                                    </div>
+                                    <div className="text-left">
+                                        <h2 className="text-xl font-bold text-app-primary">
+                                            Avis clients ({reviews.length})
+                                        </h2>
+                                        <p className="text-app-secondary">
+                                            {reviews.length > 0 
+                                                ? `Note moyenne: ${averageRating.toFixed(1)}/5 étoiles`
+                                                : "Soyez le premier à donner votre avis"
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="px-8 pb-8">
+                                <div className="space-y-6">
+                                    {/* Formulaire d'avis (si utilisateur connecté et a acheté) */}
+                                    {isAuthenticated && canReview && !checkingPurchase && (
+                                        <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+                                            <CardHeader>
+                                                <CardTitle className="text-green-800 dark:text-green-400">Donnez votre avis</CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="space-y-4">
+                                                <div>
+                                                    <label className="text-sm font-medium mb-2 block text-app-primary">Note</label>
+                                                    <StarRating rating={userRating} interactive onRate={setUserRating} />
+                                                </div>
+                                                
+                                                <div>
+                                                    <label className="text-sm font-medium mb-2 block text-app-primary">Commentaire</label>
+                                                    <Textarea
+                                                        placeholder="Partagez votre expérience avec ce produit..."
+                                                        value={userComment}
+                                                        onChange={(e) => setUserComment(e.target.value)}
+                                                        rows={4}
+                                                        className="rounded-xl"
+                                                    />
+                                                    <p className="text-xs text-app-secondary mt-1">
+                                                        Minimum 10 caractères ({userComment.length}/1000)
+                                                    </p>
+                                                </div>
+                                                
+                                                <Button 
+                                                    onClick={handleSubmitReview}
+                                                    disabled={isSubmittingReview || userRating === 0 || userComment.trim().length < 10}
+                                                    className="rounded-full"
+                                                >
+                                                    {isSubmittingReview ? "Publication..." : "Publier l'avis"}
+                                                </Button>
+                                            </CardContent>
+                                        </Card>
+                                    )}
+
+                                    {/* Message si utilisateur non connecté */}
+                                    {!isAuthenticated && (
+                                        <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+                                            <CardContent className="pt-6">
+                                                <div className="text-center">
+                                                    <p className="text-amber-800 dark:text-amber-400 mb-4">
+                                                        Connectez-vous pour donner votre avis sur ce produit
+                                                    </p>
+                                                    <Button 
+                                                        onClick={() => loginWithRedirect()}
+                                                        variant="outline"
+                                                        className="rounded-full border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+                                                    >
+                                                        Se connecter
+                                                    </Button>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    )}
+
+                                    {/* Message si utilisateur connecté mais n'a pas acheté */}
+                                    {isAuthenticated && !canReview && !checkingPurchase && (
+                                        <Card className="border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+                                            <CardContent className="pt-6">
+                                                <p className="text-center text-blue-800 dark:text-blue-400">
+                                                    Vous devez acheter ce produit pour pouvoir donner votre avis
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    )}
+
+                                    <Separator />
+
+                                    {/* Liste des avis */}
+                                    <div className="space-y-4">
+                                        {reviewsLoading ? (
+                                            <div className="space-y-4">
+                                                {[1, 2, 3].map((i) => (
+                                                    <Card key={i} className="modern-black-card rounded-xl">
+                                                        <CardContent className="pt-6">
+                                                            <div className="animate-pulse space-y-3">
+                                                                <div className="flex gap-2">
+                                                                    {[1,2,3,4,5].map((j) => (
+                                                                        <div key={j} className="h-4 w-4 bg-app-muted rounded"></div>
+                                                                    ))}
+                                                                </div>
+                                                                <div className="h-4 bg-app-muted rounded w-1/3"></div>
+                                                                <div className="h-4 bg-app-muted rounded w-full"></div>
+                                                                <div className="h-4 bg-app-muted rounded w-2/3"></div>
+                                                            </div>
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        ) : reviews.length > 0 ? (
+                                            reviews.map((review: Review) => (
+                                                <Card key={review._id} className="modern-black-card rounded-xl hover:shadow-lg transition-shadow">
+                                                    <CardContent className="pt-6">
+                                                        <div className="flex items-start justify-between mb-4">
+                                                            <div>
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <StarRating rating={review.rating} />
+                                                                    <Badge variant="outline" className="rounded-full">
+                                                                        {review.verified ? "Achat vérifié" : "Avis"}
+                                                                    </Badge>
+                                                                </div>
+                                                                <div className="flex items-center gap-2 text-sm text-app-secondary">
+                                                                    <span className="font-medium">{review.userName}</span>
+                                                                    <span>•</span>
+                                                                    <span>{new Date(review.createdAt).toLocaleDateString('fr-FR', {
+                                                                        year: 'numeric',
+                                                                        month: 'long',
+                                                                        day: 'numeric'
+                                                                    })}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p className="text-app-secondary leading-relaxed">{review.comment}</p>
+                                                    </CardContent>
+                                                </Card>
+                                            ))
+                                        ) : (
+                                            <Card className="modern-black-card rounded-xl">
+                                                <CardContent className="pt-12 pb-12">
+                                                    <div className="text-center">
+                                                        <div className="w-16 h-16 bg-app-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                                                            <Star className="h-8 w-8 text-app-muted-foreground" />
+                                                        </div>
+                                                        <h3 className="text-lg font-semibold text-app-primary mb-2">
+                                                            Aucun avis pour le moment
+                                                        </h3>
+                                                        <p className="text-app-secondary">
+                                                            Soyez le premier à partager votre expérience avec ce produit !
+                                                        </p>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        )}
+                                    </div>
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </div>
         </div>
     );
-};
-
-export default ArticleDetailPage;
+}

@@ -35,7 +35,7 @@ const OrderManagement = ({
         if (!onRefresh) return;
 
         const hasPendingOrders = orders.some(order => 
-            order.status === "placed" || order.status === "paid" || order.status === "inProgress"
+            order.status === "en attente" || order.status === "payé" || order.status === "envoyé"
         );
 
         if (!hasPendingOrders) return;
@@ -78,10 +78,10 @@ const OrderManagement = ({
 
     // Grouper les commandes par statut prioritaire
     const priorityOrders = filteredOrders.filter(order => 
-        order.status === "placed" || order.status === "paid"
+        order.status === "en attente" || order.status === "payé"
     );
     const otherOrders = filteredOrders.filter(order => 
-        order.status !== "placed" && order.status !== "paid"
+        order.status !== "en attente" && order.status !== "payé"
     );
 
     const formatLastRefresh = (date: Date) => {

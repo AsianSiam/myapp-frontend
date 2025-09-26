@@ -14,7 +14,7 @@ const MainNav = () => {
             ) : (
             <Button 
             variant="ghost"
-            className="font-semibold text-xl hover:text-slate-500 bg-white"
+            className="font-semibold text-xl title-clickable btn-secondary"
             onClick={() => loginWithRedirect()}
             >
             Connexion

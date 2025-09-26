@@ -95,7 +95,7 @@ const SearchArticleCards = ({ articleShop }: Props) => {
     };
     return (
         <div 
-            className="grid lg:grid-cols-[2fr_3fr] gap-5 group border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+            className="grid lg:grid-cols-[2fr_3fr] gap-5 group modern-black-card p-4 hover:shadow-md transition-shadow cursor-pointer"
             onClick={handleCardClick}
         >
             <img
@@ -104,57 +104,57 @@ const SearchArticleCards = ({ articleShop }: Props) => {
                 alt={articleShop.name}
             />
             <div className="flex flex-col gap-2">
-                <h2 className="text-2xl font-bold tracking-tight mb-2">
+                <h2 className="text-2xl font-bold tracking-tight mb-2 title-clickable">
                     {articleShop.name}
                 </h2>
                 <div className="flex flex-row flex-wrap">
-                    <span className="px-3 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+                    <span className="px-3 py-1 text-xs bg-blue-600 text-white rounded-full">
                         {articleShop.category}
                     </span>
                 </div>
                 <StarRating rating={articleShop.rating || 0} reviewCount={articleShop.reviewCount || 0} />
-                <p className="text-sm text-gray-600 mt-2 line-clamp-3">
+                <p className="text-sm text-app-secondary mt-2 line-clamp-3">
                     {articleShop.description}
                 </p>
                 <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center gap-1">
-                        <span className="text-lg font-bold">
+                        <span className="text-lg font-bold text-app-primary">
                             CHF {(articleShop.price / 100).toFixed(2)}
                         </span>
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-app-secondary">
                         {articleShop.stock > 0 ? `${articleShop.stock} articles en stock` : 'Rupture de stock'}
                     </div>
                     <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                         {articleShop.stock <= 0 ? (
-                            <div className="bg-gray-100 text-gray-500 px-3 py-1 rounded-md text-xs font-medium">
+                            <div className="modern-black-surface text-app-secondary px-3 py-1 rounded-md text-xs font-medium">
                                 Épuisé
                             </div>
                         ) : currentQuantity === 0 ? (
                             <button 
                                 onClick={handleIncrement}
                                 disabled={isAdding}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-xs font-medium transition-colors disabled:opacity-50"
+                                className="search-button px-4 py-2 rounded-md text-xs font-medium transition-colors disabled:opacity-50"
                             >
                                 {isAdding ? 'Ajout...' : 'Ajouter'}
                             </button>
                         ) : (
-                            <div className="flex items-center gap-2 bg-gray-100 rounded-md p-1 border border-gray-200">
+                            <div className="flex items-center gap-2 modern-black-surface rounded-md p-1 border-app">
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={handleDecrement}
-                                    className="h-8 w-8 p-0 hover:bg-white rounded-sm"
+                                    className="h-8 w-8 p-0 hover:bg-app-surface rounded-sm text-app-primary"
                                 >
                                     <Minus className="h-4 w-4" />
                                 </Button>
-                                <span className="font-bold text-sm text-gray-800 min-w-[1.5rem] text-center">{currentQuantity}</span>
+                                <span className="font-bold text-sm text-app-primary min-w-[1.5rem] text-center">{currentQuantity}</span>
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={handleIncrement}
                                     disabled={currentQuantity >= articleShop.stock}
-                                    className="h-8 w-8 p-0 hover:bg-white rounded-sm disabled:opacity-50"
+                                    className="h-8 w-8 p-0 hover:bg-app-surface rounded-sm disabled:opacity-50 text-app-primary"
                                 >
                                     <Plus className="h-4 w-4" />
                                 </Button>

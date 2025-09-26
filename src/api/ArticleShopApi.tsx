@@ -24,8 +24,8 @@ export const useGetArticleShop = (articleShopId: string) => {
 
 export const useGetAllArticleShops = (searchState: SearchState) => {
     const params = new URLSearchParams();
-    // Inclure la recherche par ID dans le terme de recherche
-    params.set("searchTerm", searchState.searchQuery);
+    // Paramètres uniformisés avec le backend
+    params.set("searchQuery", searchState.searchQuery);
     params.set("page", searchState.page.toString());
     params.set("selectedCategories", searchState.selectedCategories.join(","));
     params.set("sortOption", searchState.sortOption);
