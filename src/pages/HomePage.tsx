@@ -18,7 +18,7 @@ const HomePage = () => {
         <div className="app-container py-8 modern-black-bg">
             <div className="flex flex-col gap-16">
                 <div className="modern-black-card py-16 px-8 flex flex-col gap-8 text-center animate-fade-in">
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight title-clickable text-gradient">
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
                         Découvrez notre boutique
                     </h1>
                     <p className="text-xl text-app-secondary max-w-2xl mx-auto">

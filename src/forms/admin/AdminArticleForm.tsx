@@ -93,14 +93,14 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
     };
 
     return (
-        <div className="modern-black-card rounded-2xl border-0 overflow-hidden">
+        <div className="bg-card text-card-foreground shadow-lg rounded-2xl border overflow-hidden">
             {/* Header */}
-            <div className="bg-app-surface px-8 py-6 border-b border-app">
-                <h2 className="text-2xl font-bold text-app-primary flex items-center gap-3">
-                    <Package className="h-6 w-6 text-blue-600" />
+            <div className="bg-muted/30 px-8 py-6 border-b">
+                <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                    <Package className="h-6 w-6 text-primary" />
                     {article ? "Modifier l'article" : "Créer un nouvel article"}
                 </h2>
-                <p className="text-app-secondary mt-1">
+                <p className="text-muted-foreground mt-1">
                     {article ? "Modifiez les informations de votre article" : "Ajoutez un nouvel article à votre catalogue"}
                 </p>
             </div>
@@ -111,26 +111,26 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                     {/* Informations de base */}
                     <div className="space-y-6">
                         <div className="flex items-center gap-2 mb-4">
-                            <FileText className="h-5 w-5 text-app-secondary" />
-                            <h3 className="text-lg font-semibold text-app-primary">Informations générales</h3>
+                            <FileText className="h-5 w-5 text-muted-foreground" />
+                            <h3 className="text-lg font-semibold text-foreground">Informations générales</h3>
                         </div>
                         
                         <div className="grid grid-cols-1 gap-6">
                             <div>
-                                <label className="block text-sm font-semibold text-app-primary mb-3">
+                                <label className="block text-sm font-semibold text-foreground mb-3">
                                     Nom de l'article
                                 </label>
                                 <Input
                                     value={formData.name}
                                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                                     required
-                                    className="h-12 text-base modern-black-card border-0 text-app-primary placeholder:text-app-tertiary hover:bg-app-surface transition-colors"
+                                    className="h-12 text-base"
                                     placeholder="Ex: iPhone 15 Pro Max"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-app-primary mb-3">
+                                <label className="block text-sm font-semibold text-foreground mb-3">
                                     Description détaillée
                                 </label>
                                 <Textarea
@@ -138,7 +138,7 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                                     rows={4}
                                     required
-                                    className="text-base modern-black-card border-0 text-app-primary placeholder:text-app-tertiary resize-none"
+                                    className="text-base resize-none"
                                     placeholder="Décrivez les caractéristiques principales de l'article..."
                                 />
                             </div>
@@ -148,20 +148,20 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                     {/* Détails commerciaux */}
                     <div className="space-y-6">
                         <div className="flex items-center gap-2 mb-4">
-                            <Tag className="h-5 w-5 text-app-secondary" />
-                            <h3 className="text-lg font-semibold text-app-primary">Détails commerciaux</h3>
+                            <Tag className="h-5 w-5 text-muted-foreground" />
+                            <h3 className="text-lg font-semibold text-foreground">Détails commerciaux</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-semibold text-app-primary mb-3">
+                                <label className="block text-sm font-semibold text-foreground mb-3">
                                     Catégorie
                                 </label>
                                 <Select 
                                     onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))} 
                                     value={formData.category}
                                 >
-                                    <SelectTrigger className="h-12 text-base h-8 border-0 text-app-secondary select-trigger-enhanced">
+                                    <SelectTrigger className="h-12 text-base select-trigger-enhanced">
                                         <SelectValue placeholder="Sélectionner une catégorie" />
                                     </SelectTrigger>
                                     <SelectContent className="dropdown-menu animate-fade-in max-h-60">
@@ -169,10 +169,10 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                                             <SelectItem 
                                                 key={category} 
                                                 value={category}
-                                                className="text-app-primary select-item-enhanced cursor-pointer py-3 px-4"
+                                                className="select-item-enhanced cursor-pointer py-3 px-4"
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <Layers className="h-4 w-4 text-app-tertiary" />
+                                                    <Layers className="h-4 w-4 text-muted-foreground" />
                                                     {category}
                                                 </div>
                                             </SelectItem>
@@ -182,11 +182,11 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-app-primary mb-3">
+                                <label className="block text-sm font-semibold text-foreground mb-3">
                                     Prix (CHF)
                                 </label>
                                 <div className="relative">
-                                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-app-tertiary" />
+                                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                     <Input
                                         type="number"
                                         step="0.01"
@@ -194,7 +194,7 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                                         value={formData.price}
                                         onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
                                         required
-                                        className="h-12 pl-10 text-base modern-black-card border-0 text-app-primary placeholder:text-app-tertiary hover:bg-app-surface transition-colors"
+                                        className="h-12 pl-10 text-base"
                                         placeholder="0.00"
                                     />
                                 </div>
@@ -203,18 +203,18 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-semibold text-app-primary mb-3">
+                                <label className="block text-sm font-semibold text-foreground mb-3">
                                     Stock disponible
                                 </label>
                                 <div className="relative">
-                                    <Warehouse className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-app-tertiary" />
+                                    <Warehouse className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                     <Input
                                         type="number"
                                         min="0"
                                         value={formData.stock}
                                         onChange={(e) => setFormData(prev => ({ ...prev, stock: e.target.value }))}
                                         required
-                                        className="h-12 pl-10 text-base modern-black-card border-0 text-app-primary placeholder:text-app-tertiary hover:bg-app-surface transition-colors"
+                                        className="h-12 pl-10 text-base"
                                         placeholder="0"
                                     />
                                 </div>
@@ -223,7 +223,7 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                     </div>
 
                     {/* Section Images */}
-                    <div className="border-t border-app pt-8">
+                    <div className="border-t pt-8">
                         <ImageSection
                             existingImages={existingImages}
                             onImagesChange={handleImagesChange}
@@ -234,7 +234,7 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                     </div>
 
                     {/* Actions */}
-                    <div className="border-t border-app pt-8">
+                    <div className="border-t pt-8">
                         <div className="flex gap-4">
                             <Button 
                                 type="submit" 
@@ -255,7 +255,7 @@ const AdminArticleForm = ({ article, onSave, isLoading, onCancel }: Props) => {
                                     type="button" 
                                     variant="outline" 
                                     onClick={onCancel}
-                                    className="h-12 px-8 text-base font-semibold border-app text-app-primary hover:bg-app-muted rounded-lg transition-all duration-200"
+                                    className="h-12 px-8 text-base font-semibold rounded-lg transition-all duration-200"
                                 >
                                     Annuler
                                 </Button>

@@ -41,7 +41,7 @@ const UserProfilePage = () => {
 
     if (isGetLoading) {
         return (
-            <div className="min-h-screen modern-black-bg">
+            <div className="admin-layout">
                 <div className="app-container py-8">
                     <div className="flex justify-center items-center min-h-[400px]">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-app-primary"></div>
@@ -52,7 +52,7 @@ const UserProfilePage = () => {
     }
     if (!currentUser) {
         return (
-            <div className="min-h-screen modern-black-bg">
+            <div className="admin-layout">
                 <div className="app-container py-8">
                     <div className="text-center text-app-primary">Unable to load user profile</div>
                 </div>
@@ -61,7 +61,7 @@ const UserProfilePage = () => {
     }
 
     return (
-        <div className="min-h-screen modern-black-bg">
+        <div className="admin-layout">
             <div className="app-container py-8">
                 <Tabs defaultValue="profil" value={activeTab} onValueChange={setActiveTab}>
                     <div className="flex justify-between items-center mb-8">
@@ -76,7 +76,7 @@ const UserProfilePage = () => {
                         )}                
                     </div>
                 <TabsContent value="profil" className="space-y-8">
-                    <div className="modern-black-card rounded-2xl border-0 p-8">
+                    <div className="content-card rounded-2xl border-0 p-8">
                         <h2 className="text-2xl font-bold text-app-primary mb-6">Détails du compte et du profil</h2>
                         
                         <div className="space-y-6">
@@ -118,7 +118,7 @@ const UserProfilePage = () => {
                     </div>
                 </TabsContent>
                 <TabsContent value="manage-profile">
-                    <div className="modern-black-card rounded-2xl border-0 p-8">
+                    <div className="content-card rounded-2xl border-0 p-8">
                         <UserProfileForm currentUser={currentUser} onSave={handleUpdateUser} onCancel={handleCancel} isLoading={isUpdateLoading} />
                     </div>
                 </TabsContent>

@@ -132,7 +132,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                         <FormItem className='w-full md:w-1/2'>
                             <FormLabel className="text-app-primary">Pseudo</FormLabel>
                             <FormControl>
-                                <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
+                                <Input {...field} className='form-input-enhanced smooth-transition' />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -144,7 +144,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                     <FormItem className='w-full md:w-1/2'>
                         <FormLabel className="text-app-primary">Nom</FormLabel>
                         <FormControl>
-                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
+                            <Input {...field} className='form-input-enhanced smooth-transition' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -153,7 +153,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                     <FormItem className='w-full md:w-1/2'>
                         <FormLabel className="text-app-primary">Prénom</FormLabel>
                         <FormControl>
-                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
+                            <Input {...field} className='form-input-enhanced smooth-transition' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -177,7 +177,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-between modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors"
+                                        className="w-full justify-between form-input-enhanced smooth-transition"
                                         onClick={() => {
                                             console.log("🟢 Manual button clicked!");
                                             console.log("🟢 Before toggle:", indicatifOpen);
@@ -261,7 +261,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                 type="number"
                                 value={field.value ?? ""}
                                 onChange={e => field.onChange(e.target.value === "" ? undefined : +e.target.value)}
-                                className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors'
+                                className='form-input-enhanced smooth-transition'
                             />
                         </FormControl>
                         <FormMessage />
@@ -275,7 +275,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                             <Input
                                 {...field}
                                 type="date"
-                                className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors'
+                                className='form-input-enhanced smooth-transition'
                             />
                         </FormControl>
                         <FormMessage />
@@ -296,7 +296,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-between modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors"
+                                        className="w-full justify-between form-input-enhanced smooth-transition"
                                         onClick={() => {
                                             console.log("🟢 Language manual button clicked!");
                                             setLanguageOpen(!languageOpen);
@@ -374,7 +374,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                     <FormItem className='flex-1'>
                         <FormLabel className="text-app-primary">Rue et numéro</FormLabel>
                         <FormControl>
-                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
+                            <Input {...field} className='form-input-enhanced smooth-transition' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -389,7 +389,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                 type="number"
                                 value={field.value ?? ""}
                                 onChange={e => field.onChange(e.target.value === "" ? undefined : +e.target.value)}
-                                className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors'
+                                className='form-input-enhanced smooth-transition'
                             />
                         </FormControl>
                         <FormMessage />
@@ -399,7 +399,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                     <FormItem className='w-full md:w-1/2'>
                         <FormLabel className="text-app-primary">Ville</FormLabel>
                         <FormControl>
-                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
+                            <Input {...field} className='form-input-enhanced smooth-transition' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -410,7 +410,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                     <FormItem>
                         <FormLabel className="text-app-primary">Canton</FormLabel>
                         <FormControl>
-                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
+                            <Input {...field} className='form-input-enhanced smooth-transition' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -419,7 +419,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                     <FormItem className='w-full md:w-1/2'>
                         <FormLabel className="text-app-primary">Pays</FormLabel>
                         <FormControl>
-                            <Input {...field} className='modern-black-card border-app text-app-primary hover:bg-app-surface transition-colors' />
+                            <Input {...field} className='form-input-enhanced smooth-transition' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -435,7 +435,7 @@ const UserProfileForm = ({ onSave, onCancel, isLoading, currentUser, buttonText 
                                     type="button" 
                                     variant="outline" 
                                     onClick={onCancel}
-                                    className="border-app hover:bg-app-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                    className="button-outline hover-blue-accent"
                                 >
                                     Annuler
                                 </Button>

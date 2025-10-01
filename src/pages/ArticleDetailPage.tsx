@@ -3,17 +3,14 @@ import { useCart } from "@/contexts/CartContext";
 import * as ArticleShopApi from "@/api/ArticleShopApi";
 import * as ReviewApi from "@/api/ReviewApi";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Star, ShoppingCart, ArrowLeft, Plus, Minus, ChevronLeft, ChevronRight, Package, FileText, CreditCard } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Plus, Minus, ChevronLeft, ChevronRight, Package, FileText, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth0 } from "@auth0/auth0-react";
-import type { Review } from "@/api/ReviewApi";
 import ArticleCheckoutButton from "@/components/ArticleCheckoutButton";
+import ReviewSection, { StarRating } from "@/components/ReviewSection";
 
 // Composants utilitaires pour éviter la répétition
 const ArticleLoadingSkeleton = () => (
@@ -190,52 +187,20 @@ const QuantityButton = ({ currentQuantity, maxStock, onQuantityChange }: {
     );
 };
 
-// Composant pour les étoiles réutilisable
-const StarRating = ({ 
-    rating, 
-    interactive = false, 
-    onRate 
-}: { 
-    rating: number; 
-    interactive?: boolean; 
-    onRate?: (rating: number) => void; 
-}) => (
-    <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-            <Star
-                key={star}
-                className={`h-5 w-5 ${
-                    star <= rating 
-                        ? "text-yellow-400 fill-yellow-400" 
-                        : "text-app-muted-foreground"
-                } ${interactive ? "cursor-pointer hover:text-yellow-400" : ""}`}
-                onClick={() => interactive && onRate?.(star)}
-            />
-        ))}
-    </div>
-);
+
 
 export default function ArticleDetailPage() {
     const { id: articleId } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { addToCart, cartItems, updateQuantity, removeFromCart } = useCart();
-    const { isAuthenticated, loginWithRedirect } = useAuth0();
-    
-    const [userRating, setUserRating] = useState(0);
-    const [userComment, setUserComment] = useState("");
-    const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
     // Queries - Seulement si on a un articleId valide
     const { articleShop: article, isLoading: articleLoading } = ArticleShopApi.useGetArticleShop(articleId || "");
-    const { reviews, isLoading: reviewsLoading } = ReviewApi.useGetArticleReviews(articleId || "");
-    const { purchaseData, isLoading: checkingPurchase } = ReviewApi.useCheckUserPurchase(articleId || "");
-    const { addReview } = ReviewApi.useAddReview();
+    const { reviews } = ReviewApi.useGetArticleReviews(articleId || "");
 
     // Trouver la quantité actuelle dans le panier
     const currentCartItem = cartItems.find(item => item.article._id === articleId);
     const currentQuantity = currentCartItem?.quantity || 0;
-
-    const canReview = isAuthenticated && (purchaseData?.hasPurchased || false);
 
     // Pas d'articleId dans l'URL
     if (!articleId) {
@@ -276,48 +241,12 @@ export default function ArticleDetailPage() {
         }
     };
 
-    const handleSubmitReview = async () => {
-        if (!isAuthenticated) {
-            loginWithRedirect();
-            return;
-        }
-
-        if (userRating === 0) {
-            toast.error("Veuillez sélectionner une note");
-            return;
-        }
-
-        if (userComment.trim().length < 10) {
-            toast.error("Votre commentaire doit contenir au moins 10 caractères");
-            return;
-        }
-
-        setIsSubmittingReview(true);
-        try {
-            await addReview({
-                articleId: articleId!,
-                reviewData: {
-                    rating: userRating,
-                    comment: userComment.trim()
-                }
-            });
-            
-            toast.success("Votre avis a été publié avec succès!");
-            setUserRating(0);
-            setUserComment("");
-        } catch (error: any) {
-            toast.error(error.message || "Erreur lors de la publication de l'avis");
-        } finally {
-            setIsSubmittingReview(false);
-        }
-    };
-
     const averageRating = reviews.length > 0 
-        ? reviews.reduce((sum: number, review: Review) => sum + review.rating, 0) / reviews.length
+        ? reviews.reduce((sum: number, review: any) => sum + review.rating, 0) / reviews.length
         : 0;
 
     return (
-        <div className="min-h-screen modern-black-bg">
+        <div className="min-h-screen admin-layout">
             {/* Bouton retour fixe */}
             <div className="sticky top-0 z-10 bg-app-background/80 backdrop-blur-sm border-b border-app">
                 <div className="app-container p-6">
@@ -334,7 +263,7 @@ export default function ArticleDetailPage() {
 
             <div className="app-container p-6 space-y-8">
                 {/* SECTION 1: Fiche produit principale */}
-                <div className="modern-black-card rounded-3xl overflow-hidden border-0">
+                <div className="content-card rounded-3xl overflow-hidden border-0">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
                         {/* Carrousel d'images */}
                         <div>
@@ -384,7 +313,7 @@ export default function ArticleDetailPage() {
                             {/* Prix */}
                             <div className="p-6">
                                 <div className="text-4xl font-bold text-app-primary mb-2">
-                                    {article.price.toFixed(2)}
+                                    {(article.price / 100).toFixed(2)} CHF
                                 </div>
                                 <div className="text-sm-semibold text-app-secondary">
                                     Prix unitaire • Livraison gratuite
@@ -407,7 +336,7 @@ export default function ArticleDetailPage() {
                 <div className="space-y-4">
                     <Accordion type="multiple" className="space-y-4">
                         {/* SECTION 2: Informations détaillées */}
-                        <AccordionItem value="details" className="modern-black-card rounded-2xl overflow-hidden border-0">
+                        <AccordionItem value="details" className="content-card rounded-2xl overflow-hidden border-0">
                             <AccordionTrigger className="px-8 py-6 hover:bg-app-muted hover:no-underline">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-full">
@@ -484,7 +413,7 @@ export default function ArticleDetailPage() {
                         </AccordionItem>
 
                         {/* SECTION 3: Avis clients */}
-                        <AccordionItem value="reviews" className="modern-black-card rounded-2xl overflow-hidden border-0">
+                        <AccordionItem value="reviews" className="content-card rounded-2xl overflow-hidden border-0">
                             <AccordionTrigger className="px-8 py-6 hover:bg-app-muted hover:no-underline">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 bg-yellow-100 dark:bg-yellow-900/20 rounded-full">
@@ -504,144 +433,10 @@ export default function ArticleDetailPage() {
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent className="px-8 pb-8">
-                                <div className="space-y-6">
-                                    {/* Formulaire d'avis (si utilisateur connecté et a acheté) */}
-                                    {isAuthenticated && canReview && !checkingPurchase && (
-                                        <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
-                                            <CardHeader>
-                                                <CardTitle className="text-green-800 dark:text-green-400">Donnez votre avis</CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="space-y-4">
-                                                <div>
-                                                    <label className="text-sm font-medium mb-2 block text-app-primary">Note</label>
-                                                    <StarRating rating={userRating} interactive onRate={setUserRating} />
-                                                </div>
-                                                
-                                                <div>
-                                                    <label className="text-sm font-medium mb-2 block text-app-primary">Commentaire</label>
-                                                    <Textarea
-                                                        placeholder="Partagez votre expérience avec ce produit..."
-                                                        value={userComment}
-                                                        onChange={(e) => setUserComment(e.target.value)}
-                                                        rows={4}
-                                                        className="rounded-xl"
-                                                    />
-                                                    <p className="text-xs text-app-secondary mt-1">
-                                                        Minimum 10 caractères ({userComment.length}/1000)
-                                                    </p>
-                                                </div>
-                                                
-                                                <Button 
-                                                    onClick={handleSubmitReview}
-                                                    disabled={isSubmittingReview || userRating === 0 || userComment.trim().length < 10}
-                                                    className="rounded-full"
-                                                >
-                                                    {isSubmittingReview ? "Publication..." : "Publier l'avis"}
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                    )}
-
-                                    {/* Message si utilisateur non connecté */}
-                                    {!isAuthenticated && (
-                                        <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
-                                            <CardContent className="pt-6">
-                                                <div className="text-center">
-                                                    <p className="text-amber-800 dark:text-amber-400 mb-4">
-                                                        Connectez-vous pour donner votre avis sur ce produit
-                                                    </p>
-                                                    <Button 
-                                                        onClick={() => loginWithRedirect()}
-                                                        variant="outline"
-                                                        className="rounded-full border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40"
-                                                    >
-                                                        Se connecter
-                                                    </Button>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    )}
-
-                                    {/* Message si utilisateur connecté mais n'a pas acheté */}
-                                    {isAuthenticated && !canReview && !checkingPurchase && (
-                                        <Card className="border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
-                                            <CardContent className="pt-6">
-                                                <p className="text-center text-blue-800 dark:text-blue-400">
-                                                    Vous devez acheter ce produit pour pouvoir donner votre avis
-                                                </p>
-                                            </CardContent>
-                                        </Card>
-                                    )}
-
-                                    <Separator />
-
-                                    {/* Liste des avis */}
-                                    <div className="space-y-4">
-                                        {reviewsLoading ? (
-                                            <div className="space-y-4">
-                                                {[1, 2, 3].map((i) => (
-                                                    <Card key={i} className="modern-black-card rounded-xl">
-                                                        <CardContent className="pt-6">
-                                                            <div className="animate-pulse space-y-3">
-                                                                <div className="flex gap-2">
-                                                                    {[1,2,3,4,5].map((j) => (
-                                                                        <div key={j} className="h-4 w-4 bg-app-muted rounded"></div>
-                                                                    ))}
-                                                                </div>
-                                                                <div className="h-4 bg-app-muted rounded w-1/3"></div>
-                                                                <div className="h-4 bg-app-muted rounded w-full"></div>
-                                                                <div className="h-4 bg-app-muted rounded w-2/3"></div>
-                                                            </div>
-                                                        </CardContent>
-                                                    </Card>
-                                                ))}
-                                            </div>
-                                        ) : reviews.length > 0 ? (
-                                            reviews.map((review: Review) => (
-                                                <Card key={review._id} className="modern-black-card rounded-xl hover:shadow-lg transition-shadow">
-                                                    <CardContent className="pt-6">
-                                                        <div className="flex items-start justify-between mb-4">
-                                                            <div>
-                                                                <div className="flex items-center gap-3 mb-2">
-                                                                    <StarRating rating={review.rating} />
-                                                                    <Badge variant="outline" className="rounded-full">
-                                                                        {review.verified ? "Achat vérifié" : "Avis"}
-                                                                    </Badge>
-                                                                </div>
-                                                                <div className="flex items-center gap-2 text-sm text-app-secondary">
-                                                                    <span className="font-medium">{review.userName}</span>
-                                                                    <span>•</span>
-                                                                    <span>{new Date(review.createdAt).toLocaleDateString('fr-FR', {
-                                                                        year: 'numeric',
-                                                                        month: 'long',
-                                                                        day: 'numeric'
-                                                                    })}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <p className="text-app-secondary leading-relaxed">{review.comment}</p>
-                                                    </CardContent>
-                                                </Card>
-                                            ))
-                                        ) : (
-                                            <Card className="modern-black-card rounded-xl">
-                                                <CardContent className="pt-12 pb-12">
-                                                    <div className="text-center">
-                                                        <div className="w-16 h-16 bg-app-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                                                            <Star className="h-8 w-8 text-app-muted-foreground" />
-                                                        </div>
-                                                        <h3 className="text-lg font-semibold text-app-primary mb-2">
-                                                            Aucun avis pour le moment
-                                                        </h3>
-                                                        <p className="text-app-secondary">
-                                                            Soyez le premier à partager votre expérience avec ce produit !
-                                                        </p>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        )}
-                                    </div>
-                                </div>
+                                <ReviewSection 
+                                    articleId={articleId!} 
+                                    showTitle={false}
+                                />
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>

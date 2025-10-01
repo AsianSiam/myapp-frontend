@@ -95,7 +95,7 @@ const SearchArticleCards = ({ articleShop }: Props) => {
     };
     return (
         <div 
-            className="grid lg:grid-cols-[2fr_3fr] gap-5 group modern-black-card p-4 hover:shadow-md transition-shadow cursor-pointer"
+            className="grid lg:grid-cols-[2fr_3fr] gap-5 group content-card hover:shadow-md smooth-transition cursor-pointer"
             onClick={handleCardClick}
         >
             <img
@@ -134,7 +134,7 @@ const SearchArticleCards = ({ articleShop }: Props) => {
                             <button 
                                 onClick={handleIncrement}
                                 disabled={isAdding}
-                                className="search-button px-4 py-2 rounded-md text-xs font-medium transition-colors disabled:opacity-50"
+                                className="search-button px-4 py-2 rounded-md text-xs font-medium smooth-transition disabled:opacity-50"
                             >
                                 {isAdding ? 'Ajout...' : 'Ajouter'}
                             </button>

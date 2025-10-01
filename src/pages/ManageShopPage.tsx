@@ -81,7 +81,7 @@ const ManageShopPage = () => {
     };
 
     return (
-        <div className="min-h-screen modern-black-bg">
+        <div className="admin-layout">
             <div className="app-container py-8">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-app-primary">Panneau de contrôle administrateur</h1>
@@ -89,24 +89,24 @@ const ManageShopPage = () => {
                 </div>
 
             <Tabs defaultValue="orders" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 modern-black-card rounded-lg border-0">
-                    <TabsTrigger value="orders" className="rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <TabsList className="grid w-full grid-cols-4 content-card rounded-lg border-0">
+                    <TabsTrigger value="orders" className="rounded-lg hover-blue-accent color-transition">
                         Commandes ({orders?.length || 0})
                     </TabsTrigger>
-                    <TabsTrigger value="create-article" className="rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    <TabsTrigger value="create-article" className="rounded-lg hover-blue-accent color-transition">
                         Créer un article
                     </TabsTrigger>
-                    <TabsTrigger value="manage-articles" className="rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    <TabsTrigger value="manage-articles" className="rounded-lg hover-blue-accent color-transition">
                         Gérer les articles ({articles?.length || 0})
                     </TabsTrigger>
-                    <TabsTrigger value="admin-users" className="rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    <TabsTrigger value="admin-users" className="rounded-lg hover-blue-accent color-transition">
                         Administrateurs
                     </TabsTrigger>
                 </TabsList>
 
                 {/* Onglet Commandes */}
                 <TabsContent value="orders" className="space-y-6 mt-6">
-                    <div className="modern-black-card rounded-2xl border-0">
+                    <div className="content-card rounded-2xl border-0">
                         <OrderManagement
                             orders={orders}
                             isLoading={isLoadingOrders}
@@ -119,7 +119,7 @@ const ManageShopPage = () => {
 
                 {/* Onglet Création d'article */}
                 <TabsContent value="create-article" className="space-y-6 mt-6">
-                    <div className="modern-black-card rounded-2xl border-0 p-8">
+                    <div className="content-card rounded-2xl border-0 p-8">
                         <AdminArticleForm 
                             onSave={handleCreateArticle}
                             isLoading={isCreatingArticle}
@@ -129,7 +129,7 @@ const ManageShopPage = () => {
 
                 {/* Onglet Gestion des articles */}
                 <TabsContent value="manage-articles" className="space-y-6 mt-6">
-                    <div className="modern-black-card rounded-2xl border-0 p-8">
+                    <div className="content-card rounded-2xl border-0 p-8">
                         <div className="flex justify-between items-center mb-8">
                             <h2 className="text-2xl font-bold text-app-primary">Tous les articles</h2>
                             <Button 
@@ -157,7 +157,7 @@ const ManageShopPage = () => {
                                 {filteredArticles && filteredArticles.length > 0 ? (
                                     <div className="grid gap-4">
                                         {filteredArticles.map((article: ArticleShop) => (
-                                            <div key={article._id} className="modern-black-card rounded-xl p-4 md:p-6 hover:shadow-md transition-shadow">
+                                            <div key={article._id} className="content-card rounded-xl hover:shadow-md smooth-transition">
                                                 <div className="flex flex-col md:flex-row items-start gap-4">
                                                     <img 
                                                         src={article.imageUrl} 
@@ -168,7 +168,7 @@ const ManageShopPage = () => {
                                                         <h3 className="font-semibold text-app-primary text-lg md:text-base truncate">{article.name}</h3>
                                                         <p className="text-sm text-app-secondary mb-2 line-clamp-2">{article.description}</p>
                                                         <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-app-secondary">
-                                                            <span className="bg-app-muted/50 px-2 py-1 rounded-full text-xs">{article.category}</span>
+                                                            <span className="info-badge">{article.category}</span>
                                                             <span className="font-medium text-app-primary">CHF {(article.price / 100).toFixed(2)}</span>
                                                             <span>Stock: {article.stock}</span>
                                                             <span className="hidden md:inline">Note: {article.rating || 0}/5</span>
@@ -177,7 +177,7 @@ const ManageShopPage = () => {
                                                             <span className="text-xs text-app-tertiary">ID: {article._id}</span>
                                                         </div>
                                                         <div className="hidden md:block mt-1">
-                                                            <span className="text-xs text-app-tertiary">ID: <code className="bg-app-muted px-2 py-1 rounded text-xs font-mono border border-app text-app-primary">{article._id}</code></span>
+                                                            <span className="text-xs text-app-tertiary">ID: <code className="code-snippet">{article._id}</code></span>
                                                         </div>
                                                     </div>
                                                     <div className="flex flex-row md:flex-col gap-2 w-full md:w-auto">
@@ -185,7 +185,7 @@ const ManageShopPage = () => {
                                                             size="sm" 
                                                             variant="outline"
                                                             onClick={() => setEditingArticle(article)}
-                                                            className="flex-1 md:flex-none text-xs md:text-sm border-app hover:bg-app-muted hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                                                            className="flex-1 md:flex-none text-xs md:text-sm button-outline hover-blue-accent"
                                                         >
                                                             Modifier
                                                         </Button>
@@ -194,7 +194,7 @@ const ManageShopPage = () => {
                                                             variant="destructive"
                                                             onClick={() => handleDeleteArticle(article._id)}
                                                             disabled={isDeletingArticle}
-                                                            className="flex-1 md:flex-none text-xs md:text-sm hover:bg-red-600 dark:hover:bg-red-500 transition-all duration-200"
+                                                            className="flex-1 md:flex-none text-xs md:text-sm hover:bg-red-600 smooth-transition"
                                                         >
                                                             Supprimer
                                                         </Button>
@@ -226,7 +226,7 @@ const ManageShopPage = () => {
                     {/* Modal d'édition */}
                     {editingArticle && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                            <div className="modern-black-card rounded-2xl max-w-4xl w-full mx-4 max-h-[95vh] overflow-y-auto border-0">
+                            <div className="content-card rounded-2xl max-w-4xl w-full mx-4 max-h-[95vh] overflow-y-auto border-0">
                                 <AdminArticleForm 
                                     article={editingArticle}
                                     onSave={handleUpdateArticle}
@@ -240,7 +240,7 @@ const ManageShopPage = () => {
                     {/* Modal de création */}
                     {showCreateForm && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                            <div className="modern-black-card rounded-2xl max-w-4xl w-full mx-4 max-h-[95vh] overflow-y-auto border-0">
+                            <div className="content-card rounded-2xl max-w-4xl w-full mx-4 max-h-[95vh] overflow-y-auto border-0">
                                 <AdminArticleForm 
                                     onSave={handleCreateArticle}
                                     isLoading={isCreatingArticle}
@@ -253,7 +253,7 @@ const ManageShopPage = () => {
 
                 {/* Onglet Gestion des Administrateurs */}
                 <TabsContent value="admin-users" className="space-y-6 mt-6">
-                    <div className="modern-black-card rounded-2xl border-0 p-8">
+                    <div className="content-card rounded-2xl border-0 p-8">
                         <h2 className="text-2xl font-bold text-app-primary mb-6">Gestion des Administrateurs</h2>
                         
                         {/* Informations actuelles */}
@@ -285,13 +285,13 @@ const ManageShopPage = () => {
                                     
                                     {/* Affichage des IDs configurés dans l'environnement */}
                                     {adminData.adminIds && adminData.adminIds.length > 0 && (
-                                        <div className="mt-6 p-6 modern-black-card border-0 rounded-xl hover:bg-app-surface transition-colors">
-                                            <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-3 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
+                                        <div className="mt-6 p-6 content-card border-0 rounded-xl hover:bg-app-surface smooth-transition">
+                                            <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-3 hover-blue-accent">
                                                 IDs Admin configurés (variables d'environnement) :
                                             </h4>
                                             <div className="space-y-2">
                                                 {adminData.adminIds.map((id: string, index: number) => (
-                                                    <p key={index} className="text-sm text-app-secondary font-mono bg-app-muted px-3 py-2 rounded-lg border border-app hover:bg-app-surface hover:text-app-primary transition-all duration-200 cursor-pointer">
+                                                    <p key={index} className="text-sm text-app-secondary font-mono code-snippet cursor-pointer">
                                                         {id}
                                                     </p>
                                                 ))}
@@ -305,18 +305,18 @@ const ManageShopPage = () => {
                         </div>
 
                         {/* Instructions de configuration */}
-                        <div className="modern-black-card border-0 rounded-xl p-6 hover:bg-app-surface transition-colors">
-                            <h3 className="text-lg font-semibold text-yellow-600 dark:text-yellow-400 mb-3 hover:text-yellow-500 dark:hover:text-yellow-300 transition-colors">
+                        <div className="content-card border-0 rounded-xl p-6 hover:bg-app-surface smooth-transition">
+                            <h3 className="text-lg font-semibold text-yellow-600 dark:text-yellow-400 mb-3 hover-accent">
                                 Configuration des Administrateurs
                             </h3>
                             <div className="text-sm text-app-secondary space-y-3">
                                 <p>
                                     <strong className="text-app-primary">Méthode actuelle :</strong> Les administrateurs sont configurés via la variable d'environnement 
-                                    <code className="bg-app-muted text-app-primary px-2 py-1 rounded mx-1 font-mono border border-app hover:bg-app-surface transition-colors">ADMIN_AUTH0_IDS</code> 
-                                    dans le fichier <code className="bg-app-muted text-app-primary px-2 py-1 rounded font-mono border border-app hover:bg-app-surface transition-colors">.env</code> du backend.
+                                    <code className="code-snippet">ADMIN_AUTH0_IDS</code> 
+                                    dans le fichier <code className="code-snippet">.env</code> du backend.
                                 </p>
                                 <p>
-                                    <strong className="text-app-primary">Format :</strong> <code className="bg-app-muted text-app-primary px-2 py-1 rounded font-mono border border-app hover:bg-app-surface transition-colors">ADMIN_AUTH0_IDS=id1,id2,id3</code>
+                                    <strong className="text-app-primary">Format :</strong> <code className="code-snippet">ADMIN_AUTH0_IDS=id1,id2,id3</code>
                                 </p>
                                 <p>
                                     <strong className="text-app-primary">Pour ajouter un admin :</strong>
@@ -342,7 +342,7 @@ const ManageShopPage = () => {
                                     {allUsers.map((user: any) => {
                                         const isCurrentAdmin = adminData?.adminIds?.includes(user.auth0Id);
                                         return (
-                                            <div key={user._id} className="flex items-center justify-between p-4 modern-black-card rounded-lg border-0">
+                                            <div key={user._id} className="flex items-center justify-between p-4 content-card rounded-lg border-0">
                                                 <div>
                                                     <p className="font-medium text-app-primary">{user.name} {user.firstname}</p>
                                                     <p className="text-sm text-app-secondary">{user.email}</p>
@@ -365,7 +365,7 @@ const ManageShopPage = () => {
                                                             navigator.clipboard.writeText(user.auth0Id);
                                                             alert("ID copié dans le presse-papier !");
                                                         }}
-                                                        className="border-app hover:bg-app-muted text-sm hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                                                        className="button-outline hover-blue-accent text-sm"
                                                     >
                                                         Copier ID
                                                     </Button>

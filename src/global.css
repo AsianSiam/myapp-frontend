@@ -20,6 +20,8 @@
     --color-text-secondary: 75 85 99;
     --color-text-tertiary: 156 163 175;
     --color-text-inverse: 255 255 255;
+    --color-muted: 243 244 246;
+    --color-muted-foreground: 107 114 128;
     
     --color-accent: 59 130 246;
     --color-accent-hover: 37 99 235;
@@ -45,7 +47,7 @@
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 0%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
@@ -64,6 +66,8 @@
     --color-text-secondary: 229 229 229;   /* Blanc cassé */
     --color-text-tertiary: 163 163 163;    /* Gris clair */
     --color-text-inverse: 0 0 0;           /* Noir pour contraste */
+    --color-muted: 34 34 34;               /* Gris très foncé */
+    --color-muted-foreground: 163 163 163; /* Gris clair */
     
     --color-accent: 59 130 246;            /* Bleu pour les hovers */
     --color-accent-hover: 96 165 250;      /* Bleu plus clair */
@@ -154,11 +158,119 @@
   .text-app-secondary { color: rgb(var(--color-text-secondary)); }
   .text-app-tertiary { color: rgb(var(--color-text-tertiary)); }
   
+  .bg-app-muted { background-color: rgb(var(--color-muted)); }
+  .text-app-muted-foreground { color: rgb(var(--color-muted-foreground)); }
+  
   .border-app { border-color: rgb(var(--color-border)); }
   .border-app-subtle { border-color: rgb(var(--color-border-subtle)); }
   
   .hover\:text-app-primary:hover { color: rgb(var(--color-text-primary)); }
   .hover\:text-app-secondary:hover { color: rgb(var(--color-text-secondary)); }
+
+  /* ===== CENTRALIZED COMPONENT CLASSES ===== */
+  
+  /* Transitions communes */
+  .smooth-transition { transition: all 0.2s ease; }
+  .smooth-transition-long { transition: all 0.3s ease; }
+  .color-transition { transition: color 0.2s ease; }
+  .bg-transition { transition: background-color 0.2s ease; }
+  
+  /* Hovers accents uniformes */
+  .hover-accent { transition: color 0.2s ease; }
+  .hover-accent:hover { color: rgb(var(--color-accent)); }
+  
+  .hover-blue-accent { transition: color 0.2s ease; }
+  .hover-blue-accent:hover { 
+    color: rgb(59 130 246); 
+  }
+  html.dark .hover-blue-accent:hover { 
+    color: rgb(96 165 250); 
+  }
+
+  .hover-amber-accent { transition: color 0.2s ease; }
+  .hover-amber-accent:hover { 
+    color: rgb(245 158 11); 
+  }
+  html.dark .hover-amber-accent:hover { 
+    color: rgb(251 191 36); 
+  }
+  
+  /* Styles de boutons uniformes */
+  .button-outline {
+    border: 1px solid rgb(var(--color-border));
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+  .button-outline:hover {
+    background: rgb(var(--color-muted));
+    color: rgb(var(--color-accent));
+  }
+  
+  /* Cartes de contenu */
+  .content-card {
+    background-color: rgb(var(--color-surface-elevated));
+    border: 1px solid rgb(var(--color-border-subtle));
+    border-radius: var(--app-border-radius);
+    box-shadow: var(--app-shadow);
+    padding: 1rem;
+    transition: all 0.2s ease;
+  }
+  .content-card:hover {
+    box-shadow: var(--app-shadow-lg);
+  }
+  
+  html.dark .content-card {
+    background: rgb(17, 17, 17);
+    border: 1px solid rgb(255, 255, 255);
+  }
+  
+  /* Badge/Span informatifs */
+  .info-badge {
+    background: rgb(var(--color-muted));
+    color: rgb(var(--color-text-secondary));
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  /* Code snippets */
+  .code-snippet {
+    background: rgb(var(--color-muted));
+    color: rgb(var(--color-text-primary));
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    border: 1px solid rgb(var(--color-border));
+    transition: all 0.2s ease;
+  }
+  .code-snippet:hover {
+    background: rgb(var(--color-surface));
+  }
+  
+  /* Layouts communs */
+  .admin-layout {
+    min-height: 100vh;
+    background: rgb(var(--color-background));
+  }
+  html.dark .admin-layout {
+    background: rgb(0, 0, 0);
+  }
+  
+  .form-input-enhanced {
+    border: 1px solid rgb(var(--color-border));
+    background: rgb(var(--color-surface-elevated));
+    color: rgb(var(--color-text-primary));
+    transition: all 0.2s ease;
+  }
+  .form-input-enhanced:hover {
+    background: rgb(var(--color-surface));
+  }
+  html.dark .form-input-enhanced {
+    background: rgb(17, 17, 17);
+    border: 1px solid rgb(255, 255, 255);
+  }
 
   /* ===== ICON STYLES ===== */
   .icon-button {
@@ -201,6 +313,14 @@
   }
 
   /* ===== MODERN BLACK THEME IMPROVEMENTS ===== */
+  .modern-black-card {
+    background-color: rgb(var(--color-surface-elevated));
+    border: 1px solid rgb(var(--color-border-subtle));
+    border-radius: var(--app-border-radius);
+    box-shadow: var(--app-shadow);
+    transition: all 0.2s ease;
+  }
+
   html.dark .modern-black-bg {
     background: rgb(0, 0, 0);
   }

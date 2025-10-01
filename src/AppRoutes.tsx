@@ -13,6 +13,7 @@ const UserProfilePage = lazy(() => import("./pages/UserProfilePage"));
 const ManageShopPage = lazy(() => import("./pages/ManageShopPage"));
 const OrderStatusPage = lazy(() => import("./pages/OrderStatusPage"));
 const StripeSuccessPage = lazy(() => import("./pages/StripeSuccessPage"));
+const CheckoutShopPage = lazy(() => import("./pages/CheckoutShopPage"));
 
 // Composant de loading
 const PageLoader = () => (
@@ -74,6 +75,13 @@ const AppRoutes = () => {
                     <Layout>
                         <Suspense fallback={<PageLoader />}>
                             <UserProfilePage />
+                        </Suspense>
+                    </Layout>
+                } />
+                <Route path="/checkout" element={
+                    <Layout showHero={false}>
+                        <Suspense fallback={<PageLoader />}>
+                            <CheckoutShopPage />
                         </Suspense>
                     </Layout>
                 } />

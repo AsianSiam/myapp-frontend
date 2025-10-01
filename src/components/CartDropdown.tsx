@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Trash2, Plus, Minus, ShoppingCart, User, LogIn, CreditCard, X } from 'lucide-react';
-import ArticleCheckoutButton from '@/components/ArticleCheckoutButton';
+
 import {
     Accordion,
     AccordionContent,
@@ -254,15 +254,17 @@ const CartDropdown = () => {
                                                 {/* Bouton de paiement uniquement */}
                                                 <div className="mt-6">
                                                     {isAuthenticated ? (
-                                                        <ArticleCheckoutButton disabled={cartItems.length === 0}>
-                                                            <Button 
-                                                                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
-                                                                disabled={cartItems.length === 0}
-                                                            >
-                                                                <CreditCard className="h-5 w-5 mr-2" />
-                                                                Procéder au paiement
-                                                            </Button>
-                                                        </ArticleCheckoutButton>
+                                                        <Button 
+                                                            onClick={() => {
+                                                                setIsOpen(false); // Fermer le dropdown
+                                                                window.location.href = '/checkout'; // Rediriger vers CheckoutShopPage
+                                                            }}
+                                                            disabled={cartItems.length === 0}
+                                                            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
+                                                        >
+                                                            <CreditCard className="h-5 w-5 mr-2" />
+                                                            Procéder au paiement
+                                                        </Button>
                                                     ) : (
                                                         <Button 
                                                             onClick={handleLogin}
